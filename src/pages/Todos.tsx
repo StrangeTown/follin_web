@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { PlusCircle, Trash2 } from 'lucide-react'
+import { PlusCircle } from 'lucide-react'
 import useStore from '../store/useStore'
 import CreateTodoModal from '../components/CreateTodoModal'
+import ActiveTodoList from '../components/ActiveTodoList'
+import CompletedTodoList from '../components/CompletedTodoList'
 
 function Todos() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -9,37 +11,6 @@ function Todos() {
 
   const undoneTodos = todos.filter(todo => !todo.completed)
   const doneTodos = todos.filter(todo => todo.completed)
-
-  const TodoList = ({ items, title }: { items: typeof todos, title: string }) => (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      {items.length === 0 ? (
-        <p className="text-gray-500 text-center">No {title.toLowerCase()}</p>
-      ) : (
-        <ul className="space-y-4">
-          {items.map(todo => (
-            <li key={todo.id} className="flex items-center gap-4">
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => toggleTodo(todo.id)}
-                className="w-5 h-5"
-              />
-              <span className={`flex-1 ${todo.completed ? 'line-through text-gray-400' : ''}`}>
-                {todo.title}
-              </span>
-              <button
-                onClick={() => removeTodo(todo.id)}
-                className="p-1 text-red-500 hover:bg-red-50 rounded"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -53,8 +24,16 @@ function Todos() {
         </button>
       </div>
 
-      <TodoList items={undoneTodos} title="Active Tasks" />
-      <TodoList items={doneTodos} title="Completed Tasks" />
+      <ActiveTodoList 
+        items={undoneTodos} 
+        onToggle={toggleTodo} 
+        onRemove={removeTodo}
+      />
+      <CompletedTodoList 
+        items={doneTodos} 
+        onToggle={toggleTodo} 
+        onRemove={removeTodo}
+      />
 
       <CreateTodoModal
         isOpen={isModalOpen}

@@ -1,10 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface Todo {
+export interface Todo {
   id: string
   title: string
   completed: boolean
+  completedAt?: Date
 }
 
 interface Store {
@@ -33,7 +34,13 @@ const useStore = create<Store>()(
       })),
       toggleTodo: (id: string) => set((state) => ({
         todos: state.todos.map(todo =>
-          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          todo.id === id 
+            ? { 
+                ...todo, 
+                completed: !todo.completed,
+                completedAt: !todo.completed ? new Date() : undefined
+              } 
+            : todo
         )
       })),
       removeTodo: (id: string) => set((state) => ({
@@ -41,8 +48,8 @@ const useStore = create<Store>()(
       }))
     }),
     {
-      name: 'todo-storage', // unique name for localStorage key
-      partialize: (state) => ({ todos: state.todos }), // only persist todos
+      name: 'todo-storage',
+      partialize: (state) => ({ todos: state.todos }),
     }
   )
 )
