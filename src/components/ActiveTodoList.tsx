@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react'
-import { Todo } from '../store/useStore'
+import { Todo } from '../types/todo'
 
 interface ActiveTodoListProps {
   items: Todo[]
@@ -10,7 +10,6 @@ interface ActiveTodoListProps {
 function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">Active Tasks</h2>
       {items.length === 0 ? (
         <p className="text-gray-500 text-center">No active tasks</p>
       ) : (

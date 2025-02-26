@@ -1,12 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-export interface Todo {
-  id: string
-  title: string
-  completed: boolean
-  completedAt?: Date
-}
+import { Todo } from '../types/todo'
 
 interface Store {
   count: number
