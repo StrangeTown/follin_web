@@ -1,30 +1,25 @@
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import Home from './pages/Home'
+import Todos from './pages/Todos'
 import './App.css'
-import useStore from './store/useStore'
 
 function App() {
-  const { count, increment, decrement } = useStore()
-
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-4">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Vite + React + Tailwind + Zustand
-      </h1>
-      <div className="flex items-center gap-4">
-        <button 
-          onClick={decrement}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          -
-        </button>
-        <span className="text-2xl">{count}</span>
-        <button 
-          onClick={increment}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          +
-        </button>
+    <BrowserRouter>
+      <div>
+        <nav className="bg-gray-800 text-white p-4">
+          <div className="container mx-auto flex gap-4">
+            <Link to="/" className="hover:text-blue-300">Home</Link>
+            <Link to="/todos" className="hover:text-blue-300">Todos</Link>
+          </div>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/todos" element={<Todos />} />
+        </Routes>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
 
