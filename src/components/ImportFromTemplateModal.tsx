@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { X, Plus } from 'lucide-react'
 import CreateTemplateModal from './CreateTemplateModal'
-
+import TemplateList from './TemplateList'
 import useStore from '../store/useStore'
 import useTemplateStore from '../store/useTemplateStore'
 
@@ -16,13 +16,7 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
   const { templates } = useTemplateStore()
   const { addTodo } = useStore()
 
-  const toggleTemplate = (templateId: string) => {
-    setSelectedTemplates(prev => 
-      prev.includes(templateId)
-        ? prev.filter(id => id !== templateId)
-        : [...prev, templateId]
-    )
-  }
+  // Remove toggleTemplate function as it's no longer needed
 
   const handleImportSelected = () => {
     selectedTemplates.forEach(templateId => {
@@ -62,54 +56,21 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
           </div>
         </div>
 
-        {templates.length === 0 ? (
-          <p className="text-gray-500 text-center">No templates available</p>
-        ) : (
-          <>
-            <ul className="space-y-2 mb-4">
-              {templates.map(template => (
-                <li 
-                  key={template.id}
-                  onClick={() => toggleTemplate(template.id)}
-                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
-                    selectedTemplates.includes(template.id) ? 'bg-blue-50' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedTemplates.includes(template.id)}
-                      onChange={() => toggleTemplate(template.id)}
-                      className="w-4 h-4"
-                    />
-                    <div>
-                      <h3 className="font-medium">{template.title}</h3>
-                      <div className="flex gap-1 mt-1">
-                        {template.tags?.map(tag => (
-                          <span
-                            key={tag.id}
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: tag.color }}
-                            title={tag.name}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {selectedTemplates.length > 0 && (
-              <div className="flex justify-end">
-                <button
-                  onClick={handleImportSelected}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Import Selected ({selectedTemplates.length})
-                </button>
-              </div>
-            )}
-          </>
+        <TemplateList
+          templates={templates}
+          selectedTemplates={selectedTemplates}
+          onSelectedTemplatesChange={setSelectedTemplates}
+        />
+
+        {selectedTemplates.length > 0 && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleImportSelected}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Import Selected ({selectedTemplates.length})
+            </button>
+          </div>
         )}
 
         <CreateTemplateModal
