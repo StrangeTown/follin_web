@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, Circle } from 'lucide-react'
 import { Todo } from '../types/todo'
 
 interface ActiveTodoListProps {
@@ -16,14 +16,14 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
         <ul className="space-y-4">
           {items.map(todo => (
             <li key={todo.id} className="flex items-center gap-4">
-              <input
-                type="checkbox"
-                checked={false}
-                onChange={() => onToggle(todo.id)}
-                className="w-5 h-5"
-              />
+              <button
+                onClick={() => onToggle(todo.id)}
+                className="text-gray-400 hover:text-blue-600"
+              >
+                <Circle className="w-5 h-5" />
+              </button>
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-1">
                   <span>{todo.title}</span>
                   <div className="flex gap-1">
                     {todo.tags?.map(tag => (

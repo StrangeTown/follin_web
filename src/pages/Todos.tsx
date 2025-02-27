@@ -9,28 +9,27 @@ import CompletedTodoList from '../components/CompletedTodoList'
 function Todos() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
-  const { todos, addTodo, toggleTodo, removeTodo } = useStore()
+  const { todos, toggleTodo, removeTodo } = useStore()
 
   const undoneTodos = todos.filter(todo => !todo.completed)
   const doneTodos = todos.filter(todo => todo.completed)
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-600">Todos</h1>
+      <div className="flex justify-end items-center mb-2">
         <div className="flex gap-2">
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
             title="Import from templates"
           >
-            <Import className="w-8 h-8 text-blue-600" />
+            <Import className="w-6 h-6 text-blue-600" />
           </button>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
           >
-            <PlusCircle className="w-8 h-8 text-blue-600" />
+            <PlusCircle className="w-6 h-6 text-blue-600" />
           </button>
         </div>
       </div>

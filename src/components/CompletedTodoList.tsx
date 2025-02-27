@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, CheckCircle2 } from 'lucide-react'
 import { Todo } from '../types/todo'
 
 interface CompletedTodoListProps {
@@ -32,14 +32,14 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
               <ul className="space-y-4">
                 {todos.map(todo => (
                   <li key={todo.id} className="flex items-center gap-4">
-                    <input
-                      type="checkbox"
-                      checked={true}
-                      onChange={() => onToggle(todo.id)}
-                      className="w-5 h-5"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onToggle(todo.id)}
+                      className="text-green-600"
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                    </button>
+                    <div className="flex-1 flex justify-between items-center">
+                      <div className="flex flex-col gap-1">
                         <span className="line-through text-gray-400">{todo.title}</span>
                         <div className="flex gap-1">
                           {todo.tags?.map(tag => (
@@ -58,8 +58,12 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
                           ))}
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Completed: {new Date(todo.completedAt!).toLocaleTimeString()}
+                      <div className="text-xs text-gray-400 ml-4">
+                        {new Date(todo.completedAt!).toLocaleTimeString('en-US', {
+                          hour12: false,
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </div>
                     </div>
                     <button
