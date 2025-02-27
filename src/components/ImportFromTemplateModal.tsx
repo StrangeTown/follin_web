@@ -14,14 +14,16 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([])
   const { templates } = useTemplateStore()
-  const { addTodo } = useStore()
+  const { addTodo, todos } = useStore()
 
-  // Remove toggleTemplate function as it's no longer needed
+  const isTemplateActive = (templateId: string) => {
+    return todos.some(todo => !todo.completed && todo.templateId === templateId)
+  }
 
   const handleImportSelected = () => {
     selectedTemplates.forEach(templateId => {
       const template = templates.find(t => t.id === templateId)
-      if (template) {
+      if (template && !isTemplateActive(template.id)) {
         addTodo({
           title: template.title,
           tags: template.tags,
@@ -88,11 +90,13 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
                   t.tags?.some(tTag => tTag.id === tag.id)
                 )
                 templatesWithTag.forEach(template => {
-                  addTodo({
-                    title: template.title,
-                    tags: template.tags,
-                    templateId: template.id
-                  })
+                  if (!isTemplateActive(template.id)) {
+                    addTodo({
+                      title: template.title,
+                      tags: template.tags,
+                      templateId: template.id
+                    })
+                  }
                 })
                 onClose()
               }}
