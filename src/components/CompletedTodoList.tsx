@@ -39,7 +39,19 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
                       className="w-5 h-5"
                     />
                     <div className="flex-1">
-                      <span className="line-through text-gray-400">{todo.title}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="line-through text-gray-400">{todo.title}</span>
+                        <div className="flex gap-1">
+                          {todo.tags?.map(tag => (
+                            <span
+                              key={tag.id}
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: tag.color }}
+                              title={tag.name}
+                            />
+                          ))}
+                        </div>
+                      </div>
                       <div className="text-sm text-gray-500">
                         Completed: {new Date(todo.completedAt!).toLocaleTimeString()}
                       </div>

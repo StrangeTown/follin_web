@@ -38,7 +38,6 @@ function Todos() {
       <CreateTodoModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={addTodo}
       />
     </div>
   )

@@ -1,17 +1,20 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Todo } from '../types/todo'
+import { Todo, TodoTag } from '../types/todo'
 
 interface Store {
   count: number
   todos: Todo[]
   increment: () => void
   decrement: () => void
-  addTodo: (title: string) => void
+  addTodo: (params: AddTodoParams) => void
   toggleTodo: (id: string) => void
   removeTodo: (id: string) => void
 }
-
+interface AddTodoParams {
+  title: string
+  tags?: TodoTag[]
+}
 const useStore = create<Store>()(
   persist(
     (set) => ({
@@ -19,11 +22,12 @@ const useStore = create<Store>()(
       todos: [],
       increment: () => set((state) => ({ count: state.count + 1 })),
       decrement: () => set((state) => ({ count: state.count - 1 })),
-      addTodo: (title: string) => set((state) => ({
+      addTodo: (params: AddTodoParams) => set((state) => ({
         todos: [...state.todos, {
           id: crypto.randomUUID(),
-          title,
-          completed: false
+          title: params.title,
+          completed: false,
+          tags: params.tags || []
         }]
       })),
       toggleTodo: (id: string) => set((state) => ({
