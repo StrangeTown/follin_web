@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { PlusCircle } from 'lucide-react'
+import { PlusCircle, Import } from 'lucide-react'
 import useStore from '../store/useStore'
 import CreateTodoModal from '../components/CreateTodoModal'
+import ImportFromTemplateModal from '../components/ImportFromTemplateModal'
 import ActiveTodoList from '../components/ActiveTodoList'
 import CompletedTodoList from '../components/CompletedTodoList'
 
 function Todos() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const { todos, addTodo, toggleTodo, removeTodo } = useStore()
 
   const undoneTodos = todos.filter(todo => !todo.completed)
@@ -16,12 +18,21 @@ function Todos() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Todos</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-        >
-          <PlusCircle className="w-8 h-8 text-blue-600" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            title="Import from templates"
+          >
+            <Import className="w-8 h-8 text-blue-600" />
+          </button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+          >
+            <PlusCircle className="w-8 h-8 text-blue-600" />
+          </button>
+        </div>
       </div>
 
       <ActiveTodoList 
@@ -36,8 +47,12 @@ function Todos() {
       />
 
       <CreateTodoModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+      <ImportFromTemplateModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
       />
     </div>
   )

@@ -1,48 +1,22 @@
 import React, { useState } from 'react'
-import { X, Plus } from 'lucide-react'
-import useStore from '../store/useStore'
-import useTagStore from '../store/useTagStore'
+import { X } from 'lucide-react'
+import useTemplateStore from '../store/useTemplateStore'
 import { TodoTag } from '../types/todo'
 import TagSelector from './TagSelector'
 
-interface CreateTodoModalProps {
+interface CreateTemplateModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
+function CreateTemplateModal({ isOpen, onClose }: CreateTemplateModalProps) {
   const [title, setTitle] = useState('')
   const [selectedTags, setSelectedTags] = useState<TodoTag[]>([])
-  const [isAddingTag, setIsAddingTag] = useState(false)
-  const [newTagName, setNewTagName] = useState('')
-  const [newTagColor, setNewTagColor] = useState('#3B82F6')
-
-  const { addTodo } = useStore()
-  const { tags, addTag } = useTagStore()
-
-  const handleAddTag = () => {
-    if (newTagName.trim()) {
-      const newTag = addTag(newTagName.trim(), newTagColor)
-      setSelectedTags([...selectedTags, newTag])
-      setNewTagName('')
-      setIsAddingTag(false)
-    }
-  }
-
-  const toggleTag = (tag: TodoTag) => {
-    setSelectedTags(prev => 
-      prev.some(t => t.id === tag.id)
-        ? prev.filter(t => t.id !== tag.id)
-        : [...prev, tag]
-    )
-  }
+  const { addTemplate } = useTemplateStore()
 
   const handleSubmit = () => {
     if (title.trim()) {
-      addTodo({
-        title: title.trim(),
-        tags: selectedTags
-      })
+      addTemplate(title.trim(), selectedTags)
       setTitle('')
       setSelectedTags([])
       onClose()
@@ -55,7 +29,7 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Create New Todo</h2>
+          <h2 className="text-xl font-bold">Create New Template</h2>
           <button
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full"
@@ -63,11 +37,12 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
             <X className="w-6 h-6" />
           </button>
         </div>
+
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Todo title"
+          placeholder="Template title"
           className="w-full p-2 border rounded mb-4"
           autoFocus
         />
@@ -96,4 +71,4 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
   )
 }
 
-export default CreateTodoModal
+export default CreateTemplateModal
