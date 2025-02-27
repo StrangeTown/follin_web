@@ -12,17 +12,30 @@ interface ImportFromTemplateModalProps {
 
 function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalProps) {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [selectedTemplates, setSelectedTemplates] = useState<string[]>([])
   const { templates } = useTemplateStore()
   const { addTodo } = useStore()
 
-  const handleImport = (templateId: string) => {
-    const template = templates.find(t => t.id === templateId)
-    if (template) {
-      addTodo({
-        title: template.title,
-        tags: template.tags
-      })
-    }
+  const toggleTemplate = (templateId: string) => {
+    setSelectedTemplates(prev => 
+      prev.includes(templateId)
+        ? prev.filter(id => id !== templateId)
+        : [...prev, templateId]
+    )
+  }
+
+  const handleImportSelected = () => {
+    selectedTemplates.forEach(templateId => {
+      const template = templates.find(t => t.id === templateId)
+      if (template) {
+        addTodo({
+          title: template.title,
+          tags: template.tags
+        })
+      }
+    })
+    setSelectedTemplates([])
+    onClose()
   }
 
   if (!isOpen) return null
@@ -52,35 +65,53 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
         {templates.length === 0 ? (
           <p className="text-gray-500 text-center">No templates available</p>
         ) : (
-          <ul className="space-y-2">
-            {templates.map(template => (
-              <li 
-                key={template.id}
-                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg"
-              >
-                <div>
-                  <h3 className="font-medium">{template.title}</h3>
-                  <div className="flex gap-1 mt-1">
-                    {template.tags?.map(tag => (
-                      <span
-                        key={tag.id}
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: tag.color }}
-                        title={tag.name}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleImport(template.id)}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+          <>
+            <ul className="space-y-2 mb-4">
+              {templates.map(template => (
+                <li 
+                  key={template.id}
+                  onClick={() => toggleTemplate(template.id)}
+                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                    selectedTemplates.includes(template.id) ? 'bg-blue-50' : 'hover:bg-gray-50'
+                  }`}
                 >
-                  Import
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedTemplates.includes(template.id)}
+                      onChange={() => toggleTemplate(template.id)}
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <h3 className="font-medium">{template.title}</h3>
+                      <div className="flex gap-1 mt-1">
+                        {template.tags?.map(tag => (
+                          <span
+                            key={tag.id}
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: tag.color }}
+                            title={tag.name}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            {selectedTemplates.length > 0 && (
+              <div className="flex justify-end">
+                <button
+                  onClick={handleImportSelected}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Import Selected ({selectedTemplates.length})
                 </button>
-              </li>
-            ))}
-          </ul>
+              </div>
+            )}
+          </>
         )}
+
         <CreateTemplateModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
