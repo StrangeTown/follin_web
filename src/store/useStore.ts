@@ -14,7 +14,9 @@ interface Store {
 interface AddTodoParams {
   title: string
   tags?: TodoTag[]
+  templateId?: string
 }
+
 const useStore = create<Store>()(
   persist(
     (set) => ({
@@ -27,7 +29,8 @@ const useStore = create<Store>()(
           id: crypto.randomUUID(),
           title: params.title,
           completed: false,
-          tags: params.tags || []
+          tags: params.tags || [],
+          templateId: params.templateId
         }]
       })),
       toggleTodo: (id: string) => set((state) => ({

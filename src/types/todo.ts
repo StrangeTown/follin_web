@@ -10,6 +10,7 @@ export interface Todo {
   completed: boolean
   completedAt?: Date
   tags?: TodoTag[]
+  templateId?: string
 }
 
 export interface Template {

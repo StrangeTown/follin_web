@@ -24,7 +24,8 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
       if (template) {
         addTodo({
           title: template.title,
-          tags: template.tags
+          tags: template.tags,
+          templateId: template.id
         })
       }
     })
@@ -89,7 +90,8 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
                 templatesWithTag.forEach(template => {
                   addTodo({
                     title: template.title,
-                    tags: template.tags
+                    tags: template.tags,
+                    templateId: template.id
                   })
                 })
                 onClose()
