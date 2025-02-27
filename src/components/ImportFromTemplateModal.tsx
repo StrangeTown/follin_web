@@ -73,6 +73,39 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
           </div>
         )}
 
+        <div className="flex flex-wrap gap-2 mt-4">
+          {Array.from(
+            new Map(
+              templates.flatMap(t => t.tags || [])
+                .map(tag => [tag.id, tag])
+            ).values()
+          ).map(tag => (
+            <button
+              key={tag.id}
+              onClick={() => {
+                const templatesWithTag = templates.filter(t => 
+                  t.tags?.some(tTag => tTag.id === tag.id)
+                )
+                templatesWithTag.forEach(template => {
+                  addTodo({
+                    title: template.title,
+                    tags: template.tags
+                  })
+                })
+                onClose()
+              }}
+              className="px-3 py-1 rounded text-sm"
+              style={{
+                backgroundColor: tag.color + '33',
+                color: tag.color,
+                border: `1px solid ${tag.color}`
+              }}
+            >
+              Import all "{tag.name}"
+            </button>
+          ))}
+        </div>
+
         <CreateTemplateModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
