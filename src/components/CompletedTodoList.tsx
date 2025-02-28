@@ -20,17 +20,25 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
     }
   }, {} as Record<string, Todo[]>)
 
+  // Sort dates in reverse chronological order (newest first)
+  const sortedDates = Object.keys(groupedTodos).sort((a, b) => {
+    // Convert date strings back to Date objects for comparison
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    return dateB.getTime() - dateA.getTime(); // Descending order
+  });
+
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
       {items.length === 0 ? (
         <p className="text-gray-500 text-center">No completed tasks</p>
       ) : (
-        <div className="space-y-6">
-          {Object.entries(groupedTodos).map(([date, todos]) => (
+        <div className="space-y-16">
+          {sortedDates.map(date => (
             <div key={date}>
               <h3 className="text-md font-medium text-gray-600 mb-3">{date}</h3>
               <ul className="space-y-4">
-                {todos.map(todo => (
+                {groupedTodos[date].map(todo => (
                   <li key={todo.id} className="flex items-center gap-4">
                     <button
                       onClick={() => onToggle(todo.id)}
