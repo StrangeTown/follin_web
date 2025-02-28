@@ -45,7 +45,7 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
               </div>
               <button
                 onClick={() => onRemove(todo.id)}
-                className="p-1 text-red-500 hover:bg-red-50 rounded"
+                className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
