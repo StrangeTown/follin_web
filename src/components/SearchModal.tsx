@@ -1,70 +1,43 @@
 import React, { useState, useEffect } from 'react'
 import { X, Plus, Import, CheckCircle2, Trash2 } from 'lucide-react'
 import useStore from '../store/useStore'
-import TagDot from './TagDot'
+import SearchTodoResults from './SearchTodoResults'
+import SearchCommandResults from './SearchCommandResults'
+import { getCommands } from '../data/commands'
+import { COMMAND_IDS } from '../constants/commandIds'
 
 interface SearchModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-interface Command {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  action: () => void;
-}
-
 function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const { todos } = useStore()
   
-  // Define available commands
-  const commands: Command[] = [
-    {
-      id: 'create',
-      name: 'Create Todo',
-      description: 'Create a new todo item',
-      icon: <Plus className="w-4 h-4" />,
-      action: () => {
-        onClose();
-        // You would need to implement this to open the create modal
-        // For example: setIsCreateModalOpen(true)
-      }
-    },
-    {
-      id: 'import',
-      name: 'Import from Template',
-      description: 'Create todos from templates',
-      icon: <Import className="w-4 h-4" />,
-      action: () => {
-        onClose();
-        // You would need to implement this to open the import modal
-        // For example: setIsImportModalOpen(true)
-      }
-    },
-    {
-      id: 'complete-all',
-      name: 'Complete All',
-      description: 'Mark all todos as completed',
-      icon: <CheckCircle2 className="w-4 h-4" />,
-      action: () => {
-        // Implement complete all functionality
-        onClose();
-      }
-    },
-    {
-      id: 'clear-completed',
-      name: 'Clear Completed',
-      description: 'Remove all completed todos',
-      icon: <Trash2 className="w-4 h-4" />,
-      action: () => {
-        // Implement clear completed functionality
-        onClose();
-      }
+  const handleCommandExecute = (commandId: string) => {
+    // Handle different commands based on their IDs
+    switch (commandId) {
+      case COMMAND_IDS.CREATE_TODO:
+        // Handle create todo action
+        break;
+      case COMMAND_IDS.IMPORT_FROM_TEMPLATE:
+        // Handle import from template action
+        break;
+      case COMMAND_IDS.COMPLETE_ALL:
+        // Handle complete all action
+        break;
+      case COMMAND_IDS.CLEAR_COMPLETED:
+        // Handle clear completed action
+        break;
     }
-  ];
+    
+    // Close the modal after handling the command
+    onClose();
+  };
+  
+  // Get commands with the handler function
+  const commands = getCommands(handleCommandExecute);
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,63 +91,14 @@ function SearchModal({ isOpen, onClose }: SearchModalProps) {
         />
         
         <div className="max-h-80 overflow-y-auto">
-          {/* Commands section */}
-          {filteredCommands.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2 px-2">Commands</h3>
-              <ul className="space-y-1">
-                {filteredCommands.map(command => (
-                  <li 
-                    key={command.id}
-                    onClick={command.action}
-                    className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                  >
-                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded">
-                      {command.icon}
-                    </div>
-                    <div>
-                      <div className="font-medium">{command.name}</div>
-                      <div className="text-xs text-gray-500">{command.description}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Commands section - replaced with component */}
+          <SearchCommandResults commands={filteredCommands} />
           
           {/* Todos section */}
-          {searchTerm.trim() !== '' && (
-            <div>
-              <h3 className="text-xs uppercase text-gray-500 font-semibold mb-2 px-2">Todos</h3>
-              {filteredTodos.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No todos found</p>
-              ) : (
-                <ul className="space-y-1">
-                  {filteredTodos.map(todo => (
-                    <li key={todo.id} className="p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-start gap-2">
-                        <span className={todo.completed ? "line-through text-gray-400" : ""}>
-                          {todo.title}
-                        </span>
-                        {todo.completed && (
-                          <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
-                            Completed
-                          </span>
-                        )}
-                      </div>
-                      {todo.tags && todo.tags.length > 0 && (
-                        <div className="flex gap-1 mt-1">
-                          {todo.tags.map(tag => (
-                            <TagDot key={tag.id} tag={tag} />
-                          ))}
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
+          <SearchTodoResults 
+            todos={filteredTodos} 
+            searchTerm={searchTerm} 
+          />
           
           {searchTerm.trim() !== '' && filteredTodos.length === 0 && filteredCommands.length === 0 && (
             <p className="text-gray-500 text-center py-4">No results found</p>
