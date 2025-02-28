@@ -1,5 +1,6 @@
 import { Trash2, CheckCircle2 } from 'lucide-react'
 import { Todo } from '../types/todo'
+import TagDot from './TagDot'
 
 interface CompletedTodoListProps {
   items: Todo[]
@@ -51,18 +52,7 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
                         <span className="line-through text-gray-400">{todo.title}</span>
                         <div className="flex gap-1">
                           {todo.tags?.map(tag => (
-                            <div
-                              key={tag.id}
-                              className="group relative"
-                            >
-                              <span
-                                className="w-2 h-2 rounded-full block"
-                                style={{ backgroundColor: tag.color }}
-                              />
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">
-                                {tag.name}
-                              </div>
-                            </div>
+                            <TagDot key={tag.id} tag={tag} />
                           ))}
                         </div>
                       </div>

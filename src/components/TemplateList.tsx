@@ -1,5 +1,6 @@
 import React from 'react'
 import { Template } from '../types/todo'
+import TagDot from './TagDot'
 
 interface TemplateListProps {
   templates: Template[]
@@ -41,12 +42,7 @@ function TemplateList({ templates, selectedTemplates, onSelectedTemplatesChange 
                   <h3 className="text-sm font-medium">{template.title}</h3>
                   <div className="flex gap-1 mt-0.5">
                     {template.tags?.map(tag => (
-                      <span
-                        key={tag.id}
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: tag.color }}
-                        title={tag.name}
-                      />
+                      <TagDot key={tag.id} tag={tag} />
                     ))}
                   </div>
                 </div>
