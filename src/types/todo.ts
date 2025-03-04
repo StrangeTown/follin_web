@@ -9,6 +9,7 @@ export interface Todo {
   title: string
   completed: boolean
   completedAt?: Date
+  createdAt?: Date
   tags?: TodoTag[]
   templateId?: string
 }

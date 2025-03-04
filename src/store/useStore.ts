@@ -29,6 +29,7 @@ const useStore = create<Store>()(
           id: crypto.randomUUID(),
           title: params.title,
           completed: false,
+          createdAt: new Date(),
           tags: params.tags || [],
           templateId: params.templateId
         }]

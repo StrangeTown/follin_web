@@ -9,13 +9,20 @@ interface ActiveTodoListProps {
 }
 
 function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
+  // Sort items by createdAt date, newest first
+  const sortedItems = [...items].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return dateB - dateA; // Descending order (newest first)
+  });
+
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
       {items.length === 0 ? (
         <p className="text-gray-500 text-center">No active tasks</p>
       ) : (
         <ul className="space-y-4">
-          {items.map(todo => (
+          {sortedItems.map(todo => (
             <li key={todo.id} className="flex items-center gap-4">
               <button
                 onClick={() => onToggle(todo.id)}
