@@ -23,7 +23,10 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
       ) : (
         <ul className="space-y-4">
           {sortedItems.map(todo => (
-            <li key={todo.id} className="flex items-center gap-4">
+            <li 
+              key={todo.id} 
+              className="flex items-center gap-4 p-2 rounded transition-colors hover:bg-gray-50"
+            >
               <button
                 onClick={() => onToggle(todo.id)}
                 className="text-gray-400 hover:text-blue-600"
