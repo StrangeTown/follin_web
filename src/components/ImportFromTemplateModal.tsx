@@ -15,6 +15,7 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([])
   const { templates } = useTemplateStore()
   const { addTodo, todos } = useStore()
+  const { removeTemplate } = useTemplateStore()
 
   const isTemplateActive = (templateId: string) => {
     return todos.some(todo => !todo.completed && todo.templateId === templateId)
@@ -63,6 +64,7 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
           templates={templates}
           selectedTemplates={selectedTemplates}
           onSelectedTemplatesChange={setSelectedTemplates}
+          onRemoveTemplate={removeTemplate}
         />
 
         {selectedTemplates.length > 0 && (

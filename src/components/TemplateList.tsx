@@ -1,52 +1,65 @@
 import React from 'react'
 import { Template } from '../types/todo'
+import { Trash2 } from 'lucide-react'
 import TagDot from './TagDot'
 
 interface TemplateListProps {
   templates: Template[]
   selectedTemplates: string[]
   onSelectedTemplatesChange: (selectedIds: string[]) => void
+  onRemoveTemplate: (id: string) => void
 }
 
-function TemplateList({ templates, selectedTemplates, onSelectedTemplatesChange }: TemplateListProps) {
+function TemplateList({ 
+  templates, 
+  selectedTemplates, 
+  onSelectedTemplatesChange,
+  onRemoveTemplate
+}: TemplateListProps) {
+  
   const toggleTemplate = (templateId: string) => {
-    onSelectedTemplatesChange(
-      selectedTemplates.includes(templateId)
-        ? selectedTemplates.filter(id => id !== templateId)
-        : [...selectedTemplates, templateId]
-    )
+    if (selectedTemplates.includes(templateId)) {
+      onSelectedTemplatesChange(selectedTemplates.filter(id => id !== templateId))
+    } else {
+      onSelectedTemplatesChange([...selectedTemplates, templateId])
+    }
   }
 
   return (
-    <div>
+    <div className="max-h-60 overflow-y-auto mb-4">
       {templates.length === 0 ? (
-        <p className="text-gray-500 text-center">No templates available</p>
+        <p className="text-gray-500 text-center py-4">No templates available</p>
       ) : (
-        <ul className="space-y-2 mb-4">
+        <ul className="space-y-2">
           {templates.map(template => (
             <li 
-              key={template.id}
-              onClick={() => toggleTemplate(template.id)}
-              className={`flex items-center justify-between py-1.5 px-2 rounded-lg cursor-pointer ${
-                selectedTemplates.includes(template.id) ? 'bg-blue-50' : 'hover:bg-gray-50'
-              }`}
+              key={template.id} 
+              className="flex items-center p-2 hover:bg-gray-50 rounded"
             >
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={selectedTemplates.includes(template.id)}
-                  onChange={() => toggleTemplate(template.id)}
-                  className="w-3 h-3"
-                />
-                <div>
-                  <h3 className="text-sm font-medium">{template.title}</h3>
-                  <div className="flex gap-1 mt-0.5">
-                    {template.tags?.map(tag => (
-                      <TagDot key={tag.id} tag={tag} />
-                    ))}
-                  </div>
+              <input
+                type="checkbox"
+                checked={selectedTemplates.includes(template.id)}
+                onChange={() => toggleTemplate(template.id)}
+                className="mr-3"
+              />
+              <div className="flex-1">
+                <div>{template.title}</div>
+                <div className="flex gap-1 mt-1">
+                  {template.tags?.map(tag => (
+                    <TagDot key={tag.id} tag={tag} />
+                  ))}
                 </div>
               </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveTemplate(template.id);
+                }}
+                className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
+                title="Remove template"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </li>
           ))}
         </ul>
