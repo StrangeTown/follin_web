@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { X, Plus } from 'lucide-react'
 import useStore from '../store/useStore'
 import useTagStore from '../store/useTagStore'
+import useMilestoneStore from '../store/useMilestoneStore'
 import { TodoTag } from '../types/todo'
 import TagSelector from './TagSelector'
 
@@ -13,12 +14,14 @@ interface CreateTodoModalProps {
 function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
   const [title, setTitle] = useState('')
   const [selectedTags, setSelectedTags] = useState<TodoTag[]>([])
+  const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>('')
   const [isAddingTag, setIsAddingTag] = useState(false)
   const [newTagName, setNewTagName] = useState('')
   const [newTagColor, setNewTagColor] = useState('#3B82F6')
 
   const { addTodo } = useStore()
   const { tags, addTag } = useTagStore()
+  const { milestones } = useMilestoneStore()
 
   const handleAddTag = () => {
     if (newTagName.trim()) {
@@ -41,10 +44,12 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
     if (title.trim()) {
       addTodo({
         title: title.trim(),
-        tags: selectedTags
+        tags: selectedTags,
+        milestoneId: selectedMilestoneId || undefined
       })
       setTitle('')
       setSelectedTags([])
+      setSelectedMilestoneId('')
       onClose()
     }
   }
@@ -76,6 +81,25 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
           selectedTags={selectedTags}
           onTagsChange={setSelectedTags}
         />
+
+        {/* Milestone selector */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Related Milestone
+          </label>
+          <select
+            value={selectedMilestoneId}
+            onChange={(e) => setSelectedMilestoneId(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">None</option>
+            {milestones.map(milestone => (
+              <option key={milestone.id} value={milestone.id}>
+                {milestone.title}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="flex justify-end gap-2">
           <button

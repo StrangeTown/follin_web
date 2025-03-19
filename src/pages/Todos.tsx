@@ -4,12 +4,14 @@ import useStore from '../store/useStore'
 import useMilestoneStore from '../store/useMilestoneStore'
 import CreateTodoModal from '../components/CreateTodoModal'
 import ImportFromTemplateModal from '../components/ImportFromTemplateModal'
+import CreateMilestoneModal from '../components/CreateMilestoneModal'
 import ActiveTodoList from '../components/ActiveTodoList'
 import CompletedTodoList from '../components/CompletedTodoList'
 
 function Todos() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
+  const [isCreateMilestoneModalOpen, setIsCreateMilestoneModalOpen] = useState(false)
   const { todos, toggleTodo, removeTodo } = useStore()
   const { milestones, toggleMilestoneCompletion, toggleMilestoneActive } = useMilestoneStore()
 
@@ -19,10 +21,11 @@ function Todos() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       {/* Milestones section */}
-      <div className="bg-white rounded-lg shadow p-4">
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Milestones</h2>
           <button
+            onClick={() => setIsCreateMilestoneModalOpen(true)}
             className="p-1 rounded-full hover:bg-gray-100 text-blue-600"
             title="Add milestone"
           >
@@ -79,34 +82,36 @@ function Todos() {
       </div>
 
       {/* Todo section */}
-      <div className="flex justify-end items-start mb-6">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setIsImportModalOpen(true)}
-            className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
-            title="Import from templates"
-          >
-            <Import className="w-6 h-6 text-blue-600" />
-          </button>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
-          >
-            <PlusCircle className="w-6 h-6 text-blue-600" />
-          </button>
+      <div className="bg-gray-100 rounded-lg">
+        <div className="flex justify-end items-start mb-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setIsImportModalOpen(true)}
+              className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+              title="Import from templates"
+            >
+              <Import className="w-6 h-6 text-blue-600" />
+            </button>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <PlusCircle className="w-6 h-6 text-blue-600" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      <ActiveTodoList
-        items={undoneTodos}
-        onToggle={toggleTodo}
-        onRemove={removeTodo}
-      />
-      <CompletedTodoList
-        items={doneTodos}
-        onToggle={toggleTodo}
-        onRemove={removeTodo}
-      />
+        <ActiveTodoList
+          items={undoneTodos}
+          onToggle={toggleTodo}
+          onRemove={removeTodo}
+        />
+        <CompletedTodoList
+          items={doneTodos}
+          onToggle={toggleTodo}
+          onRemove={removeTodo}
+        />
+      </div>
 
       <CreateTodoModal
         isOpen={isCreateModalOpen}
@@ -115,6 +120,10 @@ function Todos() {
       <ImportFromTemplateModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
+      />
+      <CreateMilestoneModal
+        isOpen={isCreateMilestoneModalOpen}
+        onClose={() => setIsCreateMilestoneModalOpen(false)}
       />
     </div>
   )

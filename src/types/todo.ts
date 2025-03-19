@@ -12,6 +12,7 @@ export interface Todo {
   createdAt?: Date
   tags?: TodoTag[]
   templateId?: string
+  milestoneId?: string
 }
 
 export interface Template {
@@ -19,4 +20,5 @@ export interface Template {
   title: string
   createdAt: Date
   tags?: TodoTag[]
+  milestoneId?: string
 }

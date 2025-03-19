@@ -1,6 +1,7 @@
-import { Trash2, Circle } from 'lucide-react'
+import { Trash2, Circle, Target } from 'lucide-react'
 import { Todo } from '../types/todo'
 import TagDot from './TagDot'
+import useMilestoneStore from '../store/useMilestoneStore'
 
 interface ActiveTodoListProps {
   items: Todo[]
@@ -9,6 +10,8 @@ interface ActiveTodoListProps {
 }
 
 function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
+  const { milestones } = useMilestoneStore();
+  
   // Sort items by createdAt date, newest first
   const sortedItems = [...items].sort((a, b) => {
     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -35,7 +38,17 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
               </button>
               <div className="flex-1">
                 <div className="flex flex-col gap-1">
-                  <span>{todo.title}</span>
+                  <div className="flex items-center">
+                    <span className="mr-2">{todo.title}</span>
+                    {todo.milestoneId && (
+                      <div className="flex items-center text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        <Target className="w-3 h-3 mr-1" />
+                        <span>
+                          {milestones.find(m => m.id === todo.milestoneId)?.title || 'Unknown milestone'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex gap-1">
                     {todo.tags?.map(tag => (
                       <TagDot key={tag.id} tag={tag} />

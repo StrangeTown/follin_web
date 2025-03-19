@@ -15,6 +15,7 @@ interface AddTodoParams {
   title: string
   tags?: TodoTag[]
   templateId?: string
+  milestoneId?: string
 }
 
 const useStore = create<Store>()(
@@ -31,7 +32,8 @@ const useStore = create<Store>()(
           completed: false,
           createdAt: new Date(),
           tags: params.tags || [],
-          templateId: params.templateId
+          templateId: params.templateId,
+          milestoneId: params.milestoneId
         }]
       })),
       toggleTodo: (id: string) => set((state) => ({
