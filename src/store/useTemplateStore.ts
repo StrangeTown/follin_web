@@ -4,7 +4,7 @@ import { Template, TodoTag } from '../types/todo'
 
 interface TemplateStore {
   templates: Template[]
-  addTemplate: (title: string, tags?: TodoTag[]) => Template
+  addTemplate: (title: string, tags?: TodoTag[], milestoneId?: string) => Template
   updateTemplate: (id: string, updates: Partial<Template>) => void
   removeTemplate: (id: string) => void
   getTemplate: (id: string) => Template | undefined
@@ -15,12 +15,13 @@ const useTemplateStore = create<TemplateStore>()(
     (set, get) => ({
       templates: [],
       
-      addTemplate: (title: string, tags?: TodoTag[]) => {
+      addTemplate: (title: string, tags?: TodoTag[], milestoneId?: string) => {
         const newTemplate: Template = {
           id: crypto.randomUUID(),
           title,
           createdAt: new Date(),
-          tags
+          tags,
+          milestoneId
         }
         set((state) => ({
           templates: [...state.templates, newTemplate]

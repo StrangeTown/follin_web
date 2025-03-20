@@ -21,6 +21,7 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
     return todos.some(todo => !todo.completed && todo.templateId === templateId)
   }
 
+  // In the handleImportSelected function
   const handleImportSelected = () => {
     selectedTemplates.forEach(templateId => {
       const template = templates.find(t => t.id === templateId)
@@ -28,7 +29,8 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
         addTodo({
           title: template.title,
           tags: template.tags,
-          templateId: template.id
+          templateId: template.id,
+          milestoneId: template.milestoneId
         })
       }
     })
@@ -78,6 +80,12 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
           </div>
         )}
 
+        {/* Add title for the tag import section */}
+        <div className="mt-6 mb-2">
+          <h3 className="text-md font-medium text-gray-700">Import by Tags</h3>
+          <p className="text-xs text-gray-500">Click a tag to import all templates with that tag</p>
+        </div>
+
         <div className="flex flex-wrap gap-2 mt-4">
           {Array.from(
             new Map(
@@ -87,6 +95,7 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
           ).map(tag => (
             <button
               key={tag.id}
+              // In the tag import button onClick handler
               onClick={() => {
                 const templatesWithTag = templates.filter(t => 
                   t.tags?.some(tTag => tTag.id === tag.id)
@@ -96,7 +105,8 @@ function ImportFromTemplateModal({ isOpen, onClose }: ImportFromTemplateModalPro
                     addTodo({
                       title: template.title,
                       tags: template.tags,
-                      templateId: template.id
+                      templateId: template.id,
+                      milestoneId: template.milestoneId
                     })
                   }
                 })

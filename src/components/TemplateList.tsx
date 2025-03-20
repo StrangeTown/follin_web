@@ -1,7 +1,8 @@
 import React from 'react'
 import { Template } from '../types/todo'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Target } from 'lucide-react'
 import TagDot from './TagDot'
+import useMilestoneStore from '../store/useMilestoneStore'
 
 interface TemplateListProps {
   templates: Template[]
@@ -16,6 +17,7 @@ function TemplateList({
   onSelectedTemplatesChange,
   onRemoveTemplate
 }: TemplateListProps) {
+  const { milestones } = useMilestoneStore();
   
   const toggleTemplate = (templateId: string) => {
     if (selectedTemplates.includes(templateId)) {
@@ -43,7 +45,17 @@ function TemplateList({
                 className="mr-3"
               />
               <div className="flex-1">
-                <div>{template.title}</div>
+                <div className="flex items-center">
+                  <span className="mr-2">{template.title}</span>
+                  {template.milestoneId && (
+                    <div className="flex items-center text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                      <Target className="w-3 h-3 mr-1" />
+                      <span>
+                        {milestones.find(m => m.id === template.milestoneId)?.title || 'Unknown milestone'}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <div className="flex gap-1 mt-1">
                   {template.tags?.map(tag => (
                     <TagDot key={tag.id} tag={tag} />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
 import useTemplateStore from '../store/useTemplateStore'
+import useMilestoneStore from '../store/useMilestoneStore'
 import { TodoTag } from '../types/todo'
 import TagSelector from './TagSelector'
 
@@ -12,13 +13,16 @@ interface CreateTemplateModalProps {
 function CreateTemplateModal({ isOpen, onClose }: CreateTemplateModalProps) {
   const [title, setTitle] = useState('')
   const [selectedTags, setSelectedTags] = useState<TodoTag[]>([])
+  const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>('')
   const { addTemplate } = useTemplateStore()
+  const { milestones } = useMilestoneStore()
 
   const handleSubmit = () => {
     if (title.trim()) {
-      addTemplate(title.trim(), selectedTags)
+      addTemplate(title.trim(), selectedTags, selectedMilestoneId || undefined)
       setTitle('')
       setSelectedTags([])
+      setSelectedMilestoneId('')
       onClose()
     }
   }
@@ -51,6 +55,25 @@ function CreateTemplateModal({ isOpen, onClose }: CreateTemplateModalProps) {
           selectedTags={selectedTags}
           onTagsChange={setSelectedTags}
         />
+
+        {/* Milestone selector */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Related Milestone
+          </label>
+          <select
+            value={selectedMilestoneId}
+            onChange={(e) => setSelectedMilestoneId(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">None</option>
+            {milestones.map(milestone => (
+              <option key={milestone.id} value={milestone.id}>
+                {milestone.title}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="flex justify-end gap-2">
           <button
