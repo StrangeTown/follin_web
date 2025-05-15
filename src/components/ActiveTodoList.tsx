@@ -12,7 +12,7 @@ interface ActiveTodoListProps {
 
 function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
   const { milestones } = useMilestoneStore();
-  const { addTodo } = useTodayStore();
+  const { addTodo, todos: todayTodos } = useTodayStore();
   
   // Sort items by createdAt date, newest first
   const sortedItems = [...items].sort((a, b) => {
@@ -20,6 +20,11 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
     return dateB - dateA; // Descending order (newest first)
   });
+
+  // Check if a todo is already in today's list
+  const isInToday = (todoId: string) => {
+    return todayTodos.some(todo => todo.id === todoId);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -34,8 +39,13 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
             >
               <button
                 onClick={() => addTodo(todo)}
-                className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                title="Add to Today"
+                className={`p-1 rounded ${
+                  isInToday(todo.id)
+                    ? 'bg-blue-100 text-blue-600'
+                    : 'text-blue-400 hover:text-blue-600 hover:bg-blue-50'
+                }`}
+                title={isInToday(todo.id) ? "Already in Today" : "Add to Today"}
+                disabled={isInToday(todo.id)}
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
