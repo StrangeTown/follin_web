@@ -1,14 +1,13 @@
-import { Trash2, CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { Todo } from '../types/todo'
 import TagDot from './TagDot'
 
 interface CompletedTodoListProps {
   items: Todo[]
   onToggle: (id: string) => void
-  onRemove: (id: string) => void
 }
 
-function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps) {
+function CompletedTodoList({ items, onToggle }: CompletedTodoListProps) {
   const groupedTodos = items.reduce((groups, todo) => {
     if (!todo.completedAt) return groups
     const date = new Date(todo.completedAt).toLocaleDateString('en-US', {
@@ -64,12 +63,6 @@ function CompletedTodoList({ items, onToggle, onRemove }: CompletedTodoListProps
                         })}
                       </div>
                     </div>
-                    <button
-                      onClick={() => onRemove(todo.id)}
-                      className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
                   </li>
                 ))}
               </ul>

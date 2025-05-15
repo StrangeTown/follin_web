@@ -37,7 +37,6 @@ function Todos() {
           </div>
           <TodayTodoList
             onToggle={toggleTodo}
-            onRemove={removeTodo}
           />
         </div>
 
@@ -75,7 +74,6 @@ function Todos() {
               <CompletedTodoList
                 items={doneTodos}
                 onToggle={toggleTodo}
-                onRemove={removeTodo}
               />
             </div>
           </div>
