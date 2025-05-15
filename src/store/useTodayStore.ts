@@ -8,6 +8,8 @@ interface TodayStore {
   setTodos: (todos: Todo[]) => void
   clearTodos: () => void
   updateDate: () => void
+  addTodo: (todo: Todo) => void
+  removeTodo: (id: string) => void
 }
 
 const useTodayStore = create<TodayStore>()(
@@ -35,7 +37,15 @@ const useTodayStore = create<TodayStore>()(
           }
         }
         return state
-      })
+      }),
+
+      addTodo: (todo: Todo) => set((state) => ({
+        todos: [...state.todos, todo]
+      })),
+
+      removeTodo: (id: string) => set((state) => ({
+        todos: state.todos.filter(todo => todo.id !== id)
+      }))
     }),
     {
       name: 'today-storage',

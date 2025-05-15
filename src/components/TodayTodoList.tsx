@@ -1,44 +1,54 @@
-import { Trash2, Circle, Target, ArrowLeft } from 'lucide-react'
+import { Circle, Target, Trash2, XCircle } from 'lucide-react'
 import { Todo } from '../types/todo'
 import TagDot from './TagDot'
 import useMilestoneStore from '../store/useMilestoneStore'
 import useTodayStore from '../store/useTodayStore'
+import { useEffect } from 'react';
 
-interface ActiveTodoListProps {
-  items: Todo[]
+interface TodayTodoListProps {
   onToggle: (id: string) => void
   onRemove: (id: string) => void
 }
 
-function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
+function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
   const { milestones } = useMilestoneStore();
-  const { addTodo } = useTodayStore();
+  const { todos, updateDate, clearTodos } = useTodayStore();
+  
+  // Update date to ensure we're showing today's items
+  useEffect(() => {
+    updateDate();
+  }, [updateDate]);
   
   // Sort items by createdAt date, newest first
-  const sortedItems = [...items].sort((a, b) => {
+  const sortedItems = [...todos].sort((a, b) => {
     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-    return dateB - dateA; // Descending order (newest first)
+    return dateB - dateA;
   });
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
-      {items.length === 0 ? (
-        <p className="text-gray-500 text-center">No active tasks</p>
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        {todos.length > 0 && (
+          <button
+            onClick={clearTodos}
+            className="text-red-400 hover:text-red-600 text-sm flex items-center gap-1"
+            title="Clear all tasks"
+          >
+            <XCircle className="w-4 h-4" />
+            <span>Clear all</span>
+          </button>
+        )}
+      </div>
+      {todos.length === 0 ? (
+        <p className="text-gray-500 text-center py-2">No tasks for today</p>
       ) : (
         <ul className="space-y-4">
           {sortedItems.map(todo => (
             <li 
               key={todo.id} 
-              className="group flex items-center gap-4 p-2 rounded transition-colors hover:bg-gray-50"
+              className="flex items-center gap-4 p-2 rounded transition-colors hover:bg-gray-50"
             >
-              <button
-                onClick={() => addTodo(todo)}
-                className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                title="Add to Today"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
               <button
                 onClick={() => onToggle(todo.id)}
                 className="text-gray-400 hover:text-blue-600"
@@ -67,7 +77,7 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
               </div>
               <button
                 onClick={() => onRemove(todo.id)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
+                className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -79,4 +89,4 @@ function ActiveTodoList({ items, onToggle, onRemove }: ActiveTodoListProps) {
   )
 }
 
-export default ActiveTodoList
+export default TodayTodoList

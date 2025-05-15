@@ -7,12 +7,15 @@ import CreateMilestoneModal from '../components/CreateMilestoneModal'
 import MilestoneList from '../components/MilestoneList'
 import ActiveTodoList from '../components/ActiveTodoList'
 import CompletedTodoList from '../components/CompletedTodoList'
+import TodayTodoList from '../components/TodayTodoList'
+import useTodayStore from '../store/useTodayStore'
 
 function Todos() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [isCreateMilestoneModalOpen, setIsCreateMilestoneModalOpen] = useState(false)
   const { todos, toggleTodo, removeTodo } = useStore()
+  const { setTodos } = useTodayStore()
 
   const undoneTodos = todos.filter(todo => !todo.completed)
   const doneTodos = todos.filter(todo => todo.completed)
@@ -22,8 +25,20 @@ function Todos() {
       <div className="flex gap-6">
         {/* Today section */}
         <div className="w-1/4 bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-medium mb-4">Today</h2>
-          <p className="text-gray-500 text-center py-2">No tasks for today</p>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-medium">Today</h2>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="p-1 rounded-full hover:bg-gray-100 text-blue-600"
+              title="Add todo"
+            >
+              <PlusCircle className="w-5 h-5" />
+            </button>
+          </div>
+          <TodayTodoList
+            onToggle={toggleTodo}
+            onRemove={removeTodo}
+          />
         </div>
 
         {/* Main content section */}
