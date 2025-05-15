@@ -1,4 +1,4 @@
-import { Circle, Target, Trash2, XCircle } from 'lucide-react'
+import { Circle, Target, Trash2, XCircle, ArrowRight } from 'lucide-react'
 import { Todo } from '../types/todo'
 import TagDot from './TagDot'
 import useMilestoneStore from '../store/useMilestoneStore'
@@ -12,7 +12,7 @@ interface TodayTodoListProps {
 
 function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
   const { milestones } = useMilestoneStore();
-  const { todos, updateDate, clearTodos } = useTodayStore();
+  const { todos, updateDate, clearTodos, removeTodo } = useTodayStore();
   
   // Update date to ensure we're showing today's items
   useEffect(() => {
@@ -75,12 +75,21 @@ function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
                   </div>
                 </div>
               </div>
-              <button
-                onClick={() => onRemove(todo.id)}
-                className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onRemove(todo.id)}
+                  className="p-1 text-red-300 hover:text-red-500 hover:bg-red-50 rounded"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => removeTodo(todo.id)}
+                  className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                  title="Remove from Today"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
             </li>
           ))}
         </ul>
