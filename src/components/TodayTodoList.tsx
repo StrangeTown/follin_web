@@ -1,9 +1,10 @@
-import { Circle, Target, Trash2, XCircle, ArrowRight } from 'lucide-react'
+import { Circle, Target, Trash2, XCircle, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Todo } from '../types/todo'
 import TagDot from './TagDot'
 import useMilestoneStore from '../store/useMilestoneStore'
 import useTodayStore from '../store/useTodayStore'
-import { useEffect } from 'react';
+import useStore from '../store/useStore'
+import { useEffect } from 'react'
 
 interface TodayTodoListProps {
   onToggle: (id: string) => void
@@ -11,25 +12,32 @@ interface TodayTodoListProps {
 }
 
 function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
-  const { milestones } = useMilestoneStore();
-  const { todos, updateDate, clearTodos, removeTodo } = useTodayStore();
+  const { milestones } = useMilestoneStore()
+  const { todos: todayTodos, updateDate, clearTodos, removeTodo } = useTodayStore()
+  const { todos: allTodos } = useStore()
   
   // Update date to ensure we're showing today's items
   useEffect(() => {
-    updateDate();
-  }, [updateDate]);
+    updateDate()
+  }, [updateDate])
+  
+  // Filter todos that are in today's list and get their current status from allTodos
+  const todayItems = todayTodos.map(todayTodo => {
+    const mainTodo = allTodos.find(t => t.id === todayTodo.id)
+    return mainTodo || todayTodo // Fallback to todayTodo if not found in allTodos
+  })
   
   // Sort items by createdAt date, newest first
-  const sortedItems = [...todos].sort((a, b) => {
-    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-    return dateB - dateA;
-  });
+  const sortedItems = [...todayItems].sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+    return dateB - dateA
+  })
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        {todos.length > 0 && (
+        {todayItems.length > 0 && (
           <button
             onClick={clearTodos}
             className="text-red-400 hover:text-red-600 text-sm flex items-center gap-1"
@@ -40,7 +48,7 @@ function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
           </button>
         )}
       </div>
-      {todos.length === 0 ? (
+      {todayItems.length === 0 ? (
         <p className="text-gray-500 text-center py-2">No tasks for today</p>
       ) : (
         <ul className="space-y-4">
@@ -51,14 +59,20 @@ function TodayTodoList({ onToggle, onRemove }: TodayTodoListProps) {
             >
               <button
                 onClick={() => onToggle(todo.id)}
-                className="text-gray-400 hover:text-blue-600"
+                className={`${todo.completed ? 'text-green-600' : 'text-gray-400 hover:text-blue-600'}`}
               >
-                <Circle className="w-5 h-5" />
+                {todo.completed ? (
+                  <CheckCircle2 className="w-5 h-5" />
+                ) : (
+                  <Circle className="w-5 h-5" />
+                )}
               </button>
               <div className="flex-1">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center">
-                    <span className="mr-2">{todo.title}</span>
+                    <span className={`mr-2 ${todo.completed ? 'line-through text-gray-400' : ''}`}>
+                      {todo.title}
+                    </span>
                     {todo.milestoneId && (
                       <div className="flex items-center text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
                         <Target className="w-3 h-3 mr-1" />
