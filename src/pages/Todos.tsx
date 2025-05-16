@@ -33,13 +33,17 @@ function Todos() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex gap-6">
         {/* Today section */}
-        <div className="w-1/4 bg-white rounded-lg shadow p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium">Today</h2>
+        <div className="w-1/4">
+          <div className="sticky top-8 bg-white rounded-lg shadow p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium">Today</h2>
+            </div>
+            <div className="max-h-[calc(100vh-8rem)] overflow-y-auto">
+              <TodayTodoList
+                onToggle={toggleTodo}
+              />
+            </div>
           </div>
-          <TodayTodoList
-            onToggle={toggleTodo}
-          />
         </div>
 
         {/* Main content section */}
