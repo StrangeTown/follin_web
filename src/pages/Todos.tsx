@@ -20,6 +20,15 @@ function Todos() {
   const undoneTodos = todos.filter(todo => !todo.completed)
   const doneTodos = todos.filter(todo => todo.completed)
 
+  const { removeTodo: removeTodayTodo } = useTodayStore()
+
+  const handleRemoveTodo = (id: string) => {
+    // First remove from Today list if it exists there
+    removeTodayTodo(id)
+    // Then remove from main store
+    removeTodo(id)
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex gap-6">
@@ -27,13 +36,6 @@ function Todos() {
         <div className="w-1/4 bg-white rounded-lg shadow p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-medium">Today</h2>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="p-1 rounded-full hover:bg-gray-100 text-blue-600"
-              title="Add todo"
-            >
-              <PlusCircle className="w-5 h-5" />
-            </button>
           </div>
           <TodayTodoList
             onToggle={toggleTodo}
@@ -69,7 +71,7 @@ function Todos() {
               <ActiveTodoList
                 items={undoneTodos}
                 onToggle={toggleTodo}
-                onRemove={removeTodo}
+                onRemove={handleRemoveTodo}
               />
               <CompletedTodoList
                 items={doneTodos}
