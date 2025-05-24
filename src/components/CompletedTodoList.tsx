@@ -29,7 +29,7 @@ function CompletedTodoList({ items, onToggle }: CompletedTodoListProps) {
   });
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
+    <div className="bg-gray-50 rounded-lg shadow p-6 mb-6">
       {items.length === 0 ? (
         <p className="text-gray-500 text-center">No completed tasks</p>
       ) : (
