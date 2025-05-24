@@ -2,14 +2,19 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Todo } from '../types/todo'
 
+export interface TodayTodo extends Todo {
+  priority?: boolean
+}
+
 interface TodayStore {
   date: string
-  todos: Todo[]
-  setTodos: (todos: Todo[]) => void
+  todos: TodayTodo[]
+  setTodos: (todos: TodayTodo[]) => void
   clearTodos: () => void
   updateDate: () => void
   addTodo: (todo: Todo) => void
   removeTodo: (id: string) => void
+  togglePriority: (id: string) => void
 }
 
 const useTodayStore = create<TodayStore>()(
@@ -18,7 +23,7 @@ const useTodayStore = create<TodayStore>()(
       date: new Date().toISOString().split('T')[0],
       todos: [],
       
-      setTodos: (todos: Todo[]) => set(() => ({
+      setTodos: (todos: TodayTodo[]) => set(() => ({
         todos,
         date: new Date().toISOString().split('T')[0]
       })),
@@ -40,11 +45,19 @@ const useTodayStore = create<TodayStore>()(
       }),
 
       addTodo: (todo: Todo) => set((state) => ({
-        todos: [...state.todos, todo]
+        todos: [...state.todos, { ...todo, priority: false }]
       })),
 
       removeTodo: (id: string) => set((state) => ({
         todos: state.todos.filter(todo => todo.id !== id)
+      })),
+
+      togglePriority: (id: string) => set((state) => ({
+        todos: state.todos.map(todo =>
+          todo.id === id
+            ? { ...todo, priority: !todo.priority }
+            : todo
+        )
       }))
     }),
     {
