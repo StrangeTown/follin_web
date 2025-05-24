@@ -1,8 +1,9 @@
-import { Circle, Target, XCircle, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Circle, Target, XCircle, ArrowRight, CheckCircle2, Zap } from 'lucide-react'
+import { cn } from '../lib/utils'
 import { Todo } from '../types/todo'
+import useTodayStore, { TodayTodo } from '../store/useTodayStore'
 import TagDot from './TagDot'
 import useMilestoneStore from '../store/useMilestoneStore'
-import useTodayStore from '../store/useTodayStore'
 import useStore from '../store/useStore'
 import { useEffect } from 'react'
 
@@ -12,7 +13,7 @@ interface TodayTodoListProps {
 
 function TodayTodoList({ onToggle }: TodayTodoListProps) {
   const { milestones } = useMilestoneStore()
-  const { todos: todayTodos, updateDate, clearTodos, removeTodo } = useTodayStore()
+  const { todos: todayTodos, updateDate, clearTodos, removeTodo, togglePriority } = useTodayStore()
   const { todos: allTodos } = useStore()
   
   // Update date to ensure we're showing today's items
@@ -23,7 +24,10 @@ function TodayTodoList({ onToggle }: TodayTodoListProps) {
   // Filter todos that are in today's list and get their current status from allTodos
   const todayItems = todayTodos.map(todayTodo => {
     const mainTodo = allTodos.find(t => t.id === todayTodo.id)
-    return mainTodo || todayTodo // Fallback to todayTodo if not found in allTodos
+    return {
+      ...(mainTodo || todayTodo),
+      priority: todayTodo.priority // Preserve the priority from todayTodo
+    } as TodayTodo
   })
   
   // Sort items by createdAt date, newest first
@@ -54,7 +58,9 @@ function TodayTodoList({ onToggle }: TodayTodoListProps) {
           {sortedItems.map(todo => (
             <li 
               key={todo.id} 
-              className="flex items-center gap-4 p-2 rounded transition-colors hover:bg-gray-50"
+              className={`flex items-center gap-4 p-2 rounded transition-colors hover:bg-gray-50 ${
+                todo.priority ? 'bg-yellow-50' : ''
+              }`}
             >
               <button
                 onClick={() => onToggle(todo.id)}
@@ -88,6 +94,24 @@ function TodayTodoList({ onToggle }: TodayTodoListProps) {
                   </div>
                 </div>
               </div>
+              <button
+                onClick={() => togglePriority(todo.id)}
+                className={`p-1 rounded ${
+                  todo.priority
+                    ? 'text-yellow-500 hover:text-yellow-600'
+                    : 'text-gray-300 hover:text-yellow-500'
+                }`}
+                title={todo.priority ? "Remove priority" : "Mark as priority"}
+              >
+                <Zap
+                  size={16}
+                  strokeWidth={1.5}  // Reduced from default 2 to make it thinner
+                  className={cn(
+                    "h-4 w-4 transition-colors",
+                    todo.priority ? "fill-yellow-400 stroke-yellow-400" : "stroke-gray-500"
+                  )}
+                />
+              </button>
               <button
                 onClick={() => removeTodo(todo.id)}
                 className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
