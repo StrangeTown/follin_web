@@ -1,116 +1,52 @@
-import React, { useState } from 'react'
-import { X, Plus } from 'lucide-react'
-import useStore from '../store/useStore'
-import useTagStore from '../store/useTagStore'
-import useMilestoneStore from '../store/useMilestoneStore'
-import { TodoTag } from '../types/todo'
-import TagSelector from './TagSelector'
+import { useState } from 'react'
 
-interface CreateTodoModalProps {
-  isOpen: boolean
+type Props = {
+  open: boolean
   onClose: () => void
+  onCreate: (title: string) => void
 }
 
-function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
+export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
   const [title, setTitle] = useState('')
-  const [selectedTags, setSelectedTags] = useState<TodoTag[]>([])
-  const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>('')
-  const [isAddingTag, setIsAddingTag] = useState(false)
-  const [newTagName, setNewTagName] = useState('')
-  const [newTagColor, setNewTagColor] = useState('#3B82F6')
 
-  const { addTodo } = useStore()
-  const { tags, addTag } = useTagStore()
-  const { milestones } = useMilestoneStore()
+  if (!open) return null
 
-  const handleAddTag = () => {
-    if (newTagName.trim()) {
-      const newTag = addTag(newTagName.trim(), newTagColor)
-      setSelectedTags([...selectedTags, newTag])
-      setNewTagName('')
-      setIsAddingTag(false)
-    }
+  function submit() {
+    const value = title.trim()
+    if (!value) return
+    onCreate(value)
+    setTitle('')
+    onClose()
   }
-
-  const toggleTag = (tag: TodoTag) => {
-    setSelectedTags(prev => 
-      prev.some(t => t.id === tag.id)
-        ? prev.filter(t => t.id !== tag.id)
-        : [...prev, tag]
-    )
-  }
-
-  const handleSubmit = () => {
-    if (title.trim()) {
-      addTodo({
-        title: title.trim(),
-        tags: selectedTags,
-        milestoneId: selectedMilestoneId || undefined
-      })
-      setTitle('')
-      setSelectedTags([])
-      setSelectedMilestoneId('')
-      onClose()
-    }
-  }
-
-  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Create New Todo</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black opacity-50" onClick={onClose} />
+
+      <div className="relative bg-white rounded shadow-lg w-full max-w-lg mx-4 p-6 z-10">
+        <h2 className="text-lg font-semibold mb-3">Create Todo</h2>
+
+        <label className="block">
+          <span className="text-sm text-gray-600">Title</span>
+          <input
+            className="mt-1 block w-full rounded border px-3 py-2 focus:outline-none focus:ring"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
+            placeholder="Enter a todo title"
+          />
+        </label>
+
+        <div className="mt-4 flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Todo title"
-          className="w-full p-2 border rounded mb-4"
-          autoFocus
-        />
-
-        <TagSelector
-          selectedTags={selectedTags}
-          onTagsChange={setSelectedTags}
-        />
-
-        {/* Milestone selector */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Related Milestone
-          </label>
-          <select
-            value={selectedMilestoneId}
-            onChange={(e) => setSelectedMilestoneId(e.target.value)}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">None</option>
-            {milestones.map(milestone => (
-              <option key={milestone.id} value={milestone.id}>
-                {milestone.title}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
           >
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={submit}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
           >
             Create
           </button>
@@ -119,5 +55,3 @@ function CreateTodoModal({ isOpen, onClose }: CreateTodoModalProps) {
     </div>
   )
 }
-
-export default CreateTodoModal

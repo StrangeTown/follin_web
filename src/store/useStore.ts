@@ -10,17 +10,17 @@ interface Store {
   addTodo: (params: AddTodoParams) => void
   toggleTodo: (id: string) => void
   removeTodo: (id: string) => void
+  // selector: return todos in the same order as provided ids, skipping missing ids
+  getTodosByIds: (ids: string[]) => Todo[]
 }
 interface AddTodoParams {
   title: string
   tags?: TodoTag[]
-  templateId?: string
-  milestoneId?: string
 }
 
 const useStore = create<Store>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       count: 0,
       todos: [],
       increment: () => set((state) => ({ count: state.count + 1 })),
@@ -32,8 +32,6 @@ const useStore = create<Store>()(
           completed: false,
           createdAt: new Date(),
           tags: params.tags || [],
-          templateId: params.templateId,
-          milestoneId: params.milestoneId
         }]
       })),
       toggleTodo: (id: string) => set((state) => ({
@@ -50,6 +48,14 @@ const useStore = create<Store>()(
       removeTodo: (id: string) => set((state) => ({
         todos: state.todos.filter(todo => todo.id !== id)
       }))
+      ,
+      getTodosByIds: (ids: string[]) => {
+        if (!ids || ids.length === 0) return []
+        const todos = get().todos
+        return ids
+          .map(id => todos.find(t => t.id === id))
+          .filter((t): t is Todo => !!t)
+      }
     }),
     {
       name: 'todo-storage',

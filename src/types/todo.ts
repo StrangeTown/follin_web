@@ -15,10 +15,9 @@ export interface Todo {
   milestoneId?: string
 }
 
-export interface Template {
-  id: string
-  title: string
-  createdAt: Date
-  tags?: TodoTag[]
-  milestoneId?: string
+// Represents a bucket of todos for a specific date.
+// date is a string (ISO date) for easy serialization; todos is an array of todo ids.
+export interface HistoryDate {
+  date: string
+  todoIds: string[]
 }
