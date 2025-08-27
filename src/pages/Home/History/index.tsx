@@ -12,7 +12,7 @@ export default function History() {
 
 	return (
 		<div className="space-y-2">
-			<div className="flex gap-2 items-center">
+			<div className="flex gap-2 items-stretch">
 				{days.map((d) => {
 					const key = d.toISOString()
 					const isToday = key.slice(0, 10) === todayKey

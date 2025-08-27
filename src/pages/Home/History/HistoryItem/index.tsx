@@ -22,7 +22,7 @@ export default function HistoryItem({ date, isToday }: Props) {
   return (
     <div
       key={key}
-      className={`text-xs px-2 py-1 rounded-sm bg-white/80 text-gray-800`}
+      className={`text-xs px-2 py-1 rounded-sm bg-white/80 text-gray-800 w-24`}
     >
       <div className={`inline-block px-1 rounded-sm ${isToday ? 'text-blue-600 bg-blue-50' : ''}`}>
         {formatDateLabel(date)}
