@@ -47,7 +47,7 @@ export default function HistoryItem({ date, isToday }: Props) {
 					{todos.map((t) => (
 						<div
 							key={t.id}
-							className="w-full flex items-center rounded-sm px-2 py-1 text-sm bg-white/80 text-gray-800"
+							className={`w-full flex items-center rounded-sm px-2 py-1 text-sm bg-white/80 ${t.completed ? 'line-through text-gray-400 opacity-60' : 'text-gray-800'}`}
 						>
 							<input
 								type="checkbox"
@@ -55,7 +55,7 @@ export default function HistoryItem({ date, isToday }: Props) {
 								onChange={() => toggleTodo(t.id)}
 								className="mr-2"
 							/>
-							<span className="truncate">{t.title}</span>
+							<span className={`truncate ${t.completed ? 'line-through' : ''}`}>{t.title}</span>
 						</div>
 					))}
 				</div>
