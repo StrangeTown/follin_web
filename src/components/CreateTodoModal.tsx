@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 type Props = {
   open: boolean
@@ -8,6 +8,14 @@ type Props = {
 
 export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
   const [title, setTitle] = useState('')
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (open) {
+      // focus the input when modal becomes visible
+      setTimeout(() => inputRef.current?.focus(), 0)
+    }
+  }, [open])
 
   if (!open) return null
 
@@ -32,6 +40,7 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
             className="mt-1 block w-full rounded border px-3 py-2 focus:outline-none focus:ring"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            ref={inputRef}
             onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
             placeholder="Enter a todo title"
           />
