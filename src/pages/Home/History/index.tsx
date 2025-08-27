@@ -4,7 +4,7 @@ export default function History() {
 	const days: Date[] = []
 	const today = new Date()
 	const todayKey = today.toISOString().slice(0, 10)
-	for (let i = 0; i < 7; i++) {
+	for (let i = 0; i < 3; i++) {
 		const dt = new Date(today)
 		dt.setDate(today.getDate() - i)
 		days.push(dt)

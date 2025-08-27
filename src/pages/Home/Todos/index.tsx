@@ -1,9 +1,14 @@
 import useStore from "../../../store/useStore";
 import { CalendarPlus, CalendarMinus } from "lucide-react";
 import useHistory from "../../../store/useHistory";
+import CreateTodo from '../CreateTodo'
 
 export default function Todos() {
-	const todos = useStore((s) => s.todos);
+	// subscribe to the raw todos array and derive the uncompleted todos locally
+	const allTodos = useStore((s) => s.todos);
+	const todos = allTodos.filter(t => !t.completed);
+	// display newest first
+	const displayTodos = [...todos].reverse();
 	const addTodoToDate = useHistory((s) => s.addTodoToDate);
 	const removeTodoFromDate = useHistory((s) => s.removeTodoFromDate);
 	const todayKey = new Date().toISOString().slice(0, 10);
@@ -19,7 +24,11 @@ export default function Todos() {
 	return (
 		<div>
 			<div className="flex flex-wrap gap-2">
-				{todos.map((todo) => {
+				{/* create control placed first */}
+				<div className="shrink-0">
+					<CreateTodo />
+				</div>
+				{displayTodos.map((todo) => {
 					const inToday = !!todayEntry && todayEntry.todoIds.includes(todo.id);
 					return (
 						<div
