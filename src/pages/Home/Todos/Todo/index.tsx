@@ -36,9 +36,9 @@ export default function TodoItem({
 
 	return (
 		<div
-			className={`inline-flex items-center rounded-sm px-3 py-1 text-sm bg-white/80 border-b border-gray-200 ${
-				todo.completed ? "line-through text-gray-400" : "text-gray-800"
-			} ${inToday ? "opacity-30" : ""} group cursor-pointer relative`}
+			className={`inline-flex items-center rounded-sm px-3 py-1 text-sm bg-white/80 ${
+				inToday ? "border-b border-blue-200" : "border-b border-gray-200"
+			} group cursor-pointer relative`}
 			onClick={() =>
 				inToday
 					? removeTodoFromDate(todayKey, todo.id)
@@ -50,7 +50,13 @@ export default function TodoItem({
 				setMenuOpen(true);
 			}}
 		>
-			<span className="block px-1">{todo.title}</span>
+			<span
+				className={`block px-1 truncate ${
+					inToday ? "text-blue-600" : "text-gray-800"
+				}`}
+			>
+				{todo.title}
+			</span>
 
 			{/* overlay shown on hover */}
 			<div className="absolute inset-0 flex items-center justify-center rounded-sm bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity">
