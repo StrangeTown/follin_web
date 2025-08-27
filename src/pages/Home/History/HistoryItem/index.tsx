@@ -8,10 +8,31 @@ type Props = {
 
 function formatDateLabel(d: Date) {
 	return d.toLocaleDateString(undefined, {
-		weekday: "short",
-		month: "short",
-		day: "numeric",
-	});
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric',
+	})
+}
+
+function localizedHistoryLabel(d: Date) {
+	const MS_PER_DAY = 24 * 60 * 60 * 1000
+	const today = new Date()
+	const toMidnight = (dt: Date) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate())
+	const diff = Math.round((toMidnight(today).getTime() - toMidnight(d).getTime()) / MS_PER_DAY)
+
+	if (diff === 0) {
+		// e.g. 8月23日 周三
+		const month = d.getMonth() + 1
+		const date = d.getDate()
+		const weekdays = ['日', '一', '二', '三', '四', '五', '六']
+		const wk = weekdays[d.getDay()]
+		return `${month}月${date}日 周${wk}`
+	}
+
+	if (diff === 1) return '昨天'
+	if (diff === 2) return '前天'
+
+	return formatDateLabel(d)
 }
 
 export default function HistoryItem({ date, isToday }: Props) {
@@ -32,12 +53,12 @@ export default function HistoryItem({ date, isToday }: Props) {
 	return (
 		<div
 			key={key}
-			className={`text-xs px-2 py-1 rounded-sm ${isToday ? 'bg-blue-50' : 'bg-gray-50'} text-gray-800 w-72`}
+			className={`text-xs px-2 py-1 rounded-sm ${isToday ? 'bg-blue-50' : 'bg-gray-50'} text-gray-800 ${isToday ? 'w-96' : 'w-60'}`}
 		>
 			<div
 				className={`inline-block px-1 rounded-sm ${isToday ? 'text-blue-600' : ''}`}
 			>
-				{formatDateLabel(date)}
+				{localizedHistoryLabel(date)}
 			</div>
 
 			{todos && todos.length > 0 && (
