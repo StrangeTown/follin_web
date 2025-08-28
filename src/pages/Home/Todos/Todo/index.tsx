@@ -1,5 +1,5 @@
-import { CalendarPlus, CalendarMinus, Trash2, Info } from "lucide-react";
 import { Todo as TodoType } from "../../../../types/todo";
+import TodoOverlay from "./TodoOverlay";
 import useStore from "../../../../store/useStore";
 import Confirm from "../../../../components/Confirm";
 import TodoDetailModal from "../../../../components/TodoDetailModal";
@@ -39,50 +39,17 @@ export default function TodoItem({
 				{todo.title}
 			</span>
 
-			{/* overlay shown on hover: calendar, trash, info */}
-			<div className="absolute inset-0 flex items-center justify-center rounded-sm bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity">
-				<div className="flex items-center gap-2">
-					{inToday ? (
-						<CalendarMinus
-							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-							aria-label="remove from calendar"
-							onClick={(e) => {
-								e.stopPropagation();
-								removeTodoFromDate(todayKey, todo.id);
-							}}
-						/>
-					) : (
-						<CalendarPlus
-							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-							aria-label="open calendar"
-							onClick={(e) => {
-								e.stopPropagation();
-								addTodoToDate(todayKey, todo.id);
-							}}
-						/>
-					)}
-
-					<Trash2
-						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-red-600"
-						aria-label="remove todo"
-						onClick={(e) => {
-							e.stopPropagation();
-							// open confirm modal to delete
-							setPendingRemoveId(todo.id);
-							setConfirmOpen(true);
-						}}
-					/>
-
-					<Info
-						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-						aria-label="todo info"
-						onClick={(e) => {
-							e.stopPropagation();
-							setDetailOpen(true);
-						}}
-					/>
-				</div>
-			</div>
+			<TodoOverlay
+				todo={todo}
+				inToday={inToday}
+				onCalendarMinusClick={(id) => removeTodoFromDate(todayKey, id)}
+				onCalendarPlusClick={(id) => addTodoToDate(todayKey, id)}
+				onTrashClick={(id) => {
+					setPendingRemoveId(id);
+					setConfirmOpen(true);
+				}}
+				onInfoClick={() => setDetailOpen(true)}
+			/>
 
 			<Confirm
 				open={confirmOpen}
