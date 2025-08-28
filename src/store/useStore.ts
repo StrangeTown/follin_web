@@ -10,9 +10,11 @@ interface Store {
 	addTodo: (params: AddTodoParams) => void;
 	toggleTodo: (id: string) => void;
 	removeTodo: (id: string) => void;
+	 	// update a todo by id with a partial update
+	 	updateTodo: (id: string, patch: Partial<Todo>) => void;
+
 	// selector: return todos in the same order as provided ids, skipping missing ids
 	getTodosByIds: (ids: string[]) => Todo[];
-	// selector: return all todos that are not completed
 }
 interface AddTodoParams {
 	title: string;
@@ -54,6 +56,22 @@ const useStore = create<Store>()(
 			removeTodo: (id: string) =>
 				set((state) => ({
 					todos: state.todos.filter((todo) => todo.id !== id),
+				})),
+			updateTodo: (id: string, patch: Partial<Todo>) =>
+				set((state) => ({
+					todos: state.todos.map((todo) => {
+						if (todo.id !== id) return todo
+						const updated = { ...todo, ...patch }
+						// if completed flag changed, keep completedAt in sync
+						if (typeof patch.completed === 'boolean') {
+							if (patch.completed && !todo.completed) {
+								updated.completedAt = new Date()
+							} else if (!patch.completed) {
+								updated.completedAt = undefined
+							}
+						}
+						return updated
+					}),
 				})),
 			getTodosByIds: (ids: string[]) => {
 				if (!ids || ids.length === 0) return [];

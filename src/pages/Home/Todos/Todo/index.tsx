@@ -27,12 +27,12 @@ export default function TodoItem({
 
 	return (
 		<div
-			className={`inline-flex items-center rounded-sm px-3 py-1 text-sm bg-white/80 ${
+			className={`inline-flex items-center rounded-sm px-3 py-1 text-sm bg-white/80 min-w-20 ${
 				inToday ? "border-b border-blue-200" : "border-b border-gray-200"
 			} group relative`}
 		>
 			<span
-				className={`block px-1 truncate ${
+				className={`flex-1 text-center px-1 truncate ${
 					inToday ? "text-blue-600 opacity-40" : "text-gray-800"
 				}`}
 			>
