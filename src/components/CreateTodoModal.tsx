@@ -43,7 +43,6 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 			<div className="absolute inset-0 bg-black opacity-50" onClick={onClose} />
 
 			<div className="relative bg-white rounded shadow-lg w-full max-w-lg mx-4 p-6 z-10">
-				<h2 className="text-lg font-semibold mb-3">Create</h2>
 
         {/* Title */}
 				<label className="block">
@@ -55,7 +54,7 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 						onKeyDown={(e) => {
 							if (e.key === "Enter") submit();
 						}}
-						placeholder="Enter a todo title"
+						placeholder="New Todo Title"
 					/>
 				</label>
 
