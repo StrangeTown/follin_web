@@ -6,7 +6,6 @@ import ReviewModal from "../../../../components/ReviewModal";
 
 type Props = {
 	date: Date;
-	isToday?: boolean;
 };
 
 function formatDateLabel(d: Date) {
@@ -41,8 +40,15 @@ function localizedHistoryLabel(d: Date) {
 	return formatDateLabel(d);
 }
 
-export default function HistoryItem({ date, isToday }: Props) {
+export default function HistoryItem({ date }: Props) {
 	const [showReviewModal, setShowReviewModal] = useState(false);
+	
+	// Compute isToday from the date parameter
+	const today = new Date();
+	const toMidnight = (dt: Date) =>
+		new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+	const isToday = toMidnight(today).getTime() === toMidnight(date).getTime();
+	
 	const key = date.toISOString();
 	const dateKey = date.toISOString().slice(0, 10);
 	// subscribe to the specific history entry for this date so the component updates when history changes
@@ -79,12 +85,16 @@ export default function HistoryItem({ date, isToday }: Props) {
 				>
 					{localizedHistoryLabel(date)}
 				</div>
-				<button
-					onClick={handleReviewClick}
-					className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded p-1"
-				>
-					<ListCheck className="w-4 h-4 text-gray-400" />
-				</button>
+
+				{/* Review Button - Only show for today */}
+				{isToday && (
+					<button
+						onClick={handleReviewClick}
+						className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded p-1"
+					>
+						<ListCheck className="w-4 h-4 text-gray-400" />
+					</button>
+				)}
 			</div>
 
 			{/* Todos */}
