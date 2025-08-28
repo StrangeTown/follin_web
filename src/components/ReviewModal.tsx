@@ -1,5 +1,5 @@
 import { X, ChevronUp, ChevronDown } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Todo } from "../types/todo";
 
 type Props = {
@@ -11,24 +11,43 @@ type Props = {
 
 export default function ReviewModal({ open, onClose, todos, title = "Review Todos" }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(todos.length > 0 ? 0 : null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  // Scroll active item into view
+  const scrollToActiveItem = useCallback((index: number) => {
+    const element = itemRefs.current[index];
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest'
+      });
+    }
+  }, []);
   
   const navigateUp = useCallback(() => {
     if (todos.length === 0) return;
+    let newIndex: number;
     if (activeIndex === null) {
-      setActiveIndex(0);
+      newIndex = 0;
     } else {
-      setActiveIndex(activeIndex > 0 ? activeIndex - 1 : todos.length - 1);
+      newIndex = activeIndex > 0 ? activeIndex - 1 : todos.length - 1;
     }
-  }, [activeIndex, todos.length]);
+    setActiveIndex(newIndex);
+    scrollToActiveItem(newIndex);
+  }, [activeIndex, todos.length, scrollToActiveItem]);
 
   const navigateDown = useCallback(() => {
     if (todos.length === 0) return;
+    let newIndex: number;
     if (activeIndex === null) {
-      setActiveIndex(0);
+      newIndex = 0;
     } else {
-      setActiveIndex(activeIndex < todos.length - 1 ? activeIndex + 1 : 0);
+      newIndex = activeIndex < todos.length - 1 ? activeIndex + 1 : 0;
     }
-  }, [activeIndex, todos.length]);
+    setActiveIndex(newIndex);
+    scrollToActiveItem(newIndex);
+  }, [activeIndex, todos.length, scrollToActiveItem]);
 
   // Add keyboard event handling
   useEffect(() => {
@@ -60,6 +79,11 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
     };
   }, [open, navigateUp, navigateDown, onClose]);
 
+  // Reset refs array when todos change
+  useEffect(() => {
+    itemRefs.current = itemRefs.current.slice(0, todos.length);
+  }, [todos.length]);
+
   if (!open) return null;
 
   const formatDate = (date?: Date | string) => {
@@ -80,10 +104,16 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
 
   return (
     // Modal Background
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
 
       {/* Modal Container */}
-      <div className="bg-white rounded-lg w-full h-full max-w-4xl max-h-[90vh] flex flex-col shadow-xl">
+      <div 
+        className="bg-white rounded-lg w-full h-full max-w-4xl max-h-[90vh] flex flex-col shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
@@ -107,6 +137,7 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
               {todos.map((todo, index) => (
                 <div
                   key={todo.id}
+                  ref={(el) => { itemRefs.current[index] = el; }}
                   onClick={() => setActiveIndex(activeIndex === index ? null : index)}
                   className={`p-4 rounded-lg border transition-all cursor-pointer ${
                     activeIndex === index
