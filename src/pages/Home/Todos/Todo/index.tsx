@@ -2,7 +2,7 @@ import { CalendarPlus, CalendarMinus, Trash2, Info } from "lucide-react";
 import { Todo as TodoType } from "../../../../types/todo";
 import useStore from "../../../../store/useStore";
 import Confirm from "../../../../components/Confirm";
-import Toast from "../../../../components/Toast";
+import TodoDetailModal from "../../../../components/TodoDetailModal";
 import { useState } from "react";
 
 type Props = {
@@ -23,8 +23,7 @@ export default function TodoItem({
 	const removeTodo = useStore((s) => s.removeTodo);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
-	const [toastOpen, setToastOpen] = useState(false);
-	const [toastMessage, setToastMessage] = useState("");
+	const [detailOpen, setDetailOpen] = useState(false);
 
 	return (
 		<div
@@ -34,7 +33,7 @@ export default function TodoItem({
 		>
 			<span
 				className={`block px-1 truncate ${
-					inToday ? "text-blue-600" : "text-gray-800"
+					inToday ? "text-blue-600 opacity-40" : "text-gray-800"
 				}`}
 			>
 				{todo.title}
@@ -79,8 +78,7 @@ export default function TodoItem({
 						aria-label="todo info"
 						onClick={(e) => {
 							e.stopPropagation();
-							setToastMessage("the feature not finsihed yet");
-							setToastOpen(true);
+							setDetailOpen(true);
 						}}
 					/>
 				</div>
@@ -101,10 +99,10 @@ export default function TodoItem({
 				}}
 			/>
 
-			<Toast
-				open={toastOpen}
-				message={toastMessage}
-				onClose={() => setToastOpen(false)}
+			<TodoDetailModal
+				open={detailOpen}
+				todo={todo}
+				onClose={() => setDetailOpen(false)}
 			/>
 		</div>
 	);
