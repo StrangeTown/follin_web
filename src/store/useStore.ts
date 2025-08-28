@@ -5,11 +5,14 @@ import { Todo, TodoTag } from "../types/todo";
 interface Store {
 	count: number;
 	todos: Todo[];
+	// last time the app performed a check
 	increment: () => void;
 	decrement: () => void;
 	addTodo: (params: AddTodoParams) => void;
 	toggleTodo: (id: string) => void;
 	removeTodo: (id: string) => void;
+
+
 	 	// update a todo by id with a partial update
 	 	updateTodo: (id: string, patch: Partial<Todo>) => void;
 
