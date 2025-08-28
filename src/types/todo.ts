@@ -10,6 +10,7 @@ export interface Todo {
   completed: boolean
   completedAt?: Date
   createdAt?: Date
+  scheduledDate?: Date
   tags?: TodoTag[]
   templateId?: string
   milestoneId?: string

@@ -12,9 +12,8 @@ interface Store {
 	toggleTodo: (id: string) => void;
 	removeTodo: (id: string) => void;
 
-
-	 	// update a todo by id with a partial update
-	 	updateTodo: (id: string, patch: Partial<Todo>) => void;
+	// update a todo by id with a partial update
+	updateTodo: (id: string, patch: Partial<Todo>) => void;
 
 	// selector: return todos in the same order as provided ids, skipping missing ids
 	getTodosByIds: (ids: string[]) => Todo[];
@@ -22,6 +21,7 @@ interface Store {
 interface AddTodoParams {
 	title: string;
 	tags?: TodoTag[];
+	scheduledDate?: Date;
 }
 
 const useStore = create<Store>()(
@@ -38,6 +38,7 @@ const useStore = create<Store>()(
 						{
 							id: crypto.randomUUID(),
 							title: params.title,
+							scheduledDate: params.scheduledDate,
 							completed: false,
 							createdAt: new Date(),
 							tags: params.tags || [],
@@ -63,17 +64,17 @@ const useStore = create<Store>()(
 			updateTodo: (id: string, patch: Partial<Todo>) =>
 				set((state) => ({
 					todos: state.todos.map((todo) => {
-						if (todo.id !== id) return todo
-						const updated = { ...todo, ...patch }
+						if (todo.id !== id) return todo;
+						const updated = { ...todo, ...patch };
 						// if completed flag changed, keep completedAt in sync
-						if (typeof patch.completed === 'boolean') {
+						if (typeof patch.completed === "boolean") {
 							if (patch.completed && !todo.completed) {
-								updated.completedAt = new Date()
+								updated.completedAt = new Date();
 							} else if (!patch.completed) {
-								updated.completedAt = undefined
+								updated.completedAt = undefined;
 							}
 						}
-						return updated
+						return updated;
 					}),
 				})),
 			getTodosByIds: (ids: string[]) => {
