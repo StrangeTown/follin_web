@@ -1,7 +1,9 @@
-import { CalendarPlus, CalendarMinus } from "lucide-react";
+import { CalendarPlus, CalendarMinus, Trash2, Info } from "lucide-react";
 import { Todo as TodoType } from "../../../../types/todo";
-import { useState, useEffect } from "react";
 import useStore from "../../../../store/useStore";
+import Confirm from "../../../../components/Confirm";
+import Toast from "../../../../components/Toast";
+import { useState } from "react";
 
 type Props = {
 	todo: TodoType;
@@ -19,36 +21,16 @@ export default function TodoItem({
 	removeTodoFromDate,
 }: Props) {
 	const removeTodo = useStore((s) => s.removeTodo);
-	const [menuOpen, setMenuOpen] = useState(false);
-	const [menuPos, setMenuPos] = useState<{ x: number; y: number }>({
-		x: 0,
-		y: 0,
-	});
-
-	useEffect(() => {
-		if (!menuOpen) return;
-		function onClick() {
-			setMenuOpen(false);
-		}
-		window.addEventListener("click", onClick);
-		return () => window.removeEventListener("click", onClick);
-	}, [menuOpen]);
+	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
+	const [toastOpen, setToastOpen] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
 
 	return (
 		<div
 			className={`inline-flex items-center rounded-sm px-3 py-1 text-sm bg-white/80 ${
 				inToday ? "border-b border-blue-200" : "border-b border-gray-200"
-			} group cursor-pointer relative`}
-			onClick={() =>
-				inToday
-					? removeTodoFromDate(todayKey, todo.id)
-					: addTodoToDate(todayKey, todo.id)
-			}
-			onContextMenu={(e) => {
-				e.preventDefault();
-				setMenuPos({ x: e.clientX, y: e.clientY });
-				setMenuOpen(true);
-			}}
+			} group relative`}
 		>
 			<span
 				className={`block px-1 truncate ${
@@ -58,44 +40,72 @@ export default function TodoItem({
 				{todo.title}
 			</span>
 
-			{/* overlay shown on hover */}
+			{/* overlay shown on hover: calendar, trash, info */}
 			<div className="absolute inset-0 flex items-center justify-center rounded-sm bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity">
-				{inToday ? (
-					<CalendarMinus
-						className="w-4 h-4 cursor-pointer text-gray-600"
-						aria-label="remove from calendar"
+				<div className="flex items-center gap-2">
+					{inToday ? (
+						<CalendarMinus
+							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+							aria-label="remove from calendar"
+							onClick={(e) => {
+								e.stopPropagation();
+								removeTodoFromDate(todayKey, todo.id);
+							}}
+						/>
+					) : (
+						<CalendarPlus
+							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+							aria-label="open calendar"
+							onClick={(e) => {
+								e.stopPropagation();
+								addTodoToDate(todayKey, todo.id);
+							}}
+						/>
+					)}
+
+					<Trash2
+						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-red-600"
+						aria-label="remove todo"
+						onClick={(e) => {
+							e.stopPropagation();
+							// open confirm modal to delete
+							setPendingRemoveId(todo.id);
+							setConfirmOpen(true);
+						}}
 					/>
-				) : (
-					<CalendarPlus
-						className="w-4 h-4 cursor-pointer text-gray-600"
-						aria-label="open calendar"
+
+					<Info
+						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+						aria-label="todo info"
+						onClick={(e) => {
+							e.stopPropagation();
+							setToastMessage("the feature not finsihed yet");
+							setToastOpen(true);
+						}}
 					/>
-				)}
+				</div>
 			</div>
 
-			{menuOpen && (
-				<div
-					style={{
-						position: "fixed",
-						left: menuPos.x,
-						top: menuPos.y,
-						zIndex: 60,
-					}}
-				>
-					<div className="bg-white shadow rounded border">
-						<button
-							className="block px-3 py-2 text-sm w-full text-left hover:bg-gray-100"
-							onClick={(ev) => {
-								ev.stopPropagation();
-								removeTodo(todo.id);
-								setMenuOpen(false);
-							}}
-						>
-							Remove
-						</button>
-					</div>
-				</div>
-			)}
+			<Confirm
+				open={confirmOpen}
+				title="Delete todo"
+				message="Are you sure you want to delete this todo?"
+				onCancel={() => {
+					setConfirmOpen(false);
+					setPendingRemoveId(null);
+				}}
+				onConfirm={() => {
+					if (pendingRemoveId) removeTodo(pendingRemoveId);
+					setConfirmOpen(false);
+					setPendingRemoveId(null);
+				}}
+			/>
+
+			<Toast
+				open={toastOpen}
+				message={toastMessage}
+				onClose={() => setToastOpen(false)}
+			/>
 		</div>
 	);
 }
