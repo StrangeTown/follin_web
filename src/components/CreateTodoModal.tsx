@@ -14,12 +14,15 @@ type Props = {
 export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 	const [title, setTitle] = useState("");
 	const [scheduled, setScheduled] = useState<Dayjs | null>(null)
+	const [showDatePicker, setShowDatePicker] = useState(false);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
 		if (open) {
 			// focus the input when modal becomes visible
 			setTimeout(() => inputRef.current?.focus(), 0);
+			// reset date picker to default state
+			setShowDatePicker(false);
 		}
 	}, [open]);
 
@@ -30,7 +33,8 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
  		if (!value) return;
  		onCreate(value, scheduled ? scheduled.toDate() : undefined);
  		setTitle("");
- 		setScheduled(null)
+ 		setScheduled(null);
+ 		setShowDatePicker(false);
  		onClose();
  	}
 
@@ -41,6 +45,7 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 			<div className="relative bg-white rounded shadow-lg w-full max-w-lg mx-4 p-6 z-10">
 				<h2 className="text-lg font-semibold mb-3">Create</h2>
 
+        {/* Title */}
 				<label className="block">
 					<input
 						className="mt-1 block w-full rounded px-1 py-2 outline-none border-b border-gray-300"
@@ -54,17 +59,29 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 					/>
 				</label>
 
+        {/* Todo Date */}
 				<div className="mt-6">
-					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<DatePicker
-							label="Scheduled"
-							value={scheduled}
-							onChange={(v) => setScheduled(v)}
-							slotProps={{ textField: { size: 'small', fullWidth: true } }}
-						/>
-					</LocalizationProvider>
+					{!showDatePicker ? (
+						<button
+							type="button"
+							onClick={() => setShowDatePicker(true)}
+							className="text-sm text-gray-600 hover:text-blue-600 cursor-pointer"
+						>
+							添加日期
+						</button>
+					) : (
+						<LocalizationProvider dateAdapter={AdapterDayjs}>
+							<DatePicker
+								label="Scheduled"
+								value={scheduled}
+								onChange={(v) => setScheduled(v)}
+								slotProps={{ textField: { size: 'small', fullWidth: true } }}
+							/>
+						</LocalizationProvider>
+					)}
 				</div>
 
+        {/* Actions */}
 				<div className="mt-8 flex justify-end gap-2">
 					<button
 						onClick={onClose}

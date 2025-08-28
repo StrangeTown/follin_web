@@ -1,5 +1,6 @@
 import { Todo as TodoType } from "../../../../types/todo";
 import TodoOverlay from "./TodoOverlay";
+import ScheduledDate from './ScheduledDate'
 import useStore from "../../../../store/useStore";
 import Confirm from "../../../../components/Confirm";
 import TodoDetailModal from "../../../../components/TodoDetailModal";
@@ -31,13 +32,11 @@ export default function TodoItem({
 				inToday ? "border-b border-blue-200" : "border-b border-gray-200"
 			} group relative`}
 		>
-			<span
-				className={`flex-1 text-center px-1 truncate ${
-					inToday ? "text-blue-600 opacity-40" : "text-gray-800"
-				}`}
-			>
-				{todo.title}
-			</span>
+			<div className="flex-1 flex items-center justify-center gap-1 px-1">
+				<span className={`${inToday ? 'text-blue-600 opacity-40' : 'text-gray-800'} truncate`}>{todo.title}</span>
+
+				<ScheduledDate scheduledDate={todo.scheduledDate} />
+			</div>
 
 			<TodoOverlay
 				todo={todo}
