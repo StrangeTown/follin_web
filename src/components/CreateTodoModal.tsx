@@ -1,13 +1,19 @@
 import { useState, useRef, useEffect } from "react";
+// ...existing code...
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { Dayjs } from 'dayjs'
 
 type Props = {
 	open: boolean;
 	onClose: () => void;
-	onCreate: (title: string) => void;
+	onCreate: (title: string, scheduledDate?: Date) => void;
 };
 
 export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 	const [title, setTitle] = useState("");
+	const [scheduled, setScheduled] = useState<Dayjs | null>(null)
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
@@ -19,13 +25,14 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 
 	if (!open) return null;
 
-	function submit() {
-		const value = title.trim();
-		if (!value) return;
-		onCreate(value);
-		setTitle("");
-		onClose();
-	}
+ 	function submit() {
+ 		const value = title.trim();
+ 		if (!value) return;
+ 		onCreate(value, scheduled ? scheduled.toDate() : undefined);
+ 		setTitle("");
+ 		setScheduled(null)
+ 		onClose();
+ 	}
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -47,7 +54,18 @@ export default function CreateTodoModal({ open, onClose, onCreate }: Props) {
 					/>
 				</label>
 
-				<div className="mt-4 flex justify-end gap-2">
+				<div className="mt-6">
+					<LocalizationProvider dateAdapter={AdapterDayjs}>
+						<DatePicker
+							label="Scheduled"
+							value={scheduled}
+							onChange={(v) => setScheduled(v)}
+							slotProps={{ textField: { size: 'small', fullWidth: true } }}
+						/>
+					</LocalizationProvider>
+				</div>
+
+				<div className="mt-8 flex justify-end gap-2">
 					<button
 						onClick={onClose}
 						className="px-4 py-2 rounded-md text-sm text-gray-700 border border-gray-200 bg-white hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-200"

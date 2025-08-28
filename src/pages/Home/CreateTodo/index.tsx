@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { CirclePlus } from 'lucide-react'
-import CreateTodoModal from '../../../components/CreateTodoModal'
-import useStore from '../../../store/useStore'
+import { useState } from "react";
+import { CirclePlus } from "lucide-react";
+import CreateTodoModal from "../../../components/CreateTodoModal";
+import useStore from "../../../store/useStore";
 
 export default function CreateTodo() {
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(false);
 
-		const addTodo = useStore((s) => s.addTodo)
+	const addTodo = useStore((s) => s.addTodo);
 
-		function handleCreate(title: string) {
-			addTodo({ title })
-		}
+	function handleCreate(title: string, scheduledDate?: Date) {
+		addTodo({ title, scheduledDate });
+	}
 
 	return (
 		<div>
@@ -28,5 +28,5 @@ export default function CreateTodo() {
 				onCreate={handleCreate}
 			/>
 		</div>
-	)
+	);
 }
