@@ -1,4 +1,3 @@
-import React from 'react'
 import { Plus, Import, CheckCircle2, Trash2 } from 'lucide-react'
 import { Command } from '../types/command'
 import { COMMAND_IDS } from '../constants/commandIds'
