@@ -1,8 +1,9 @@
 import { useState } from "react";
 import useHistory from "../../../../store/useHistory";
 import useStore from "../../../../store/useStore";
-import { ListCheck } from "lucide-react";
+import { ListCheck, ScanText } from "lucide-react";
 import ReviewModal from "../../../../components/ReviewModal";
+import FocusModal from "../../../../components/FocusModal";
 
 type Props = {
 	date: Date;
@@ -42,6 +43,7 @@ function localizedHistoryLabel(d: Date) {
 
 export default function HistoryItem({ date }: Props) {
 	const [showReviewModal, setShowReviewModal] = useState(false);
+	const [showFocusModal, setShowFocusModal] = useState(false);
 	
 	// Compute isToday from the date parameter
 	const today = new Date();
@@ -62,11 +64,16 @@ export default function HistoryItem({ date }: Props) {
 		.filter((t): t is NonNullable<typeof t> => !!t);
 
 	const completedTodos = todos.filter(todo => todo.completed);
+	const incompleteTodos = todos.filter(todo => !todo.completed);
 
 	const toggleTodo = useStore((s) => s.toggleTodo);
 
 	const handleReviewClick = () => {
 		setShowReviewModal(true);
+	};
+
+	const handleFocusClick = () => {
+		setShowFocusModal(true);
 	};
 
 	return (
@@ -86,14 +93,25 @@ export default function HistoryItem({ date }: Props) {
 					{localizedHistoryLabel(date)}
 				</div>
 
-				{/* Review Button - Only show for today */}
+				{/* Action Buttons - Only show for today */}
 				{isToday && (
-					<button
-						onClick={handleReviewClick}
-						className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-200 rounded p-1"
-					>
-						<ListCheck className="w-4 h-4 text-gray-400" />
-					</button>
+					<div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Focus */}
+						<button
+							onClick={handleFocusClick}
+							className="hover:bg-white/60 rounded p-1 group/button"
+						>
+							<ScanText className="w-4 h-4 text-gray-400 group-hover/button:text-blue-500" />
+						</button>
+
+            {/* Review */}
+						<button
+							onClick={handleReviewClick}
+							className="hover:bg-white/60 rounded p-1 group/button"
+						>
+							<ListCheck className="w-4 h-4 text-gray-400 group-hover/button:text-blue-500" />
+						</button>
+					</div>
 				)}
 			</div>
 
@@ -129,6 +147,14 @@ export default function HistoryItem({ date }: Props) {
 				onClose={() => setShowReviewModal(false)}
 				todos={completedTodos}
 				title={`${localizedHistoryLabel(date)} - 今日复盘`}
+			/>
+
+			{/* Focus Modal */}
+			<FocusModal
+				open={showFocusModal}
+				onClose={() => setShowFocusModal(false)}
+				todos={incompleteTodos}
+				title={`${localizedHistoryLabel(date)} - 专注模式`}
 			/>
 		</div>
 	);
