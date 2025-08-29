@@ -52,8 +52,8 @@ export default function TodoItem({
 
 			<Confirm
 				open={confirmOpen}
-				title="Delete todo"
-				message="Are you sure you want to delete this todo?"
+				title="删除任务"
+				message="确定要删除该任务吗？"
 				onCancel={() => {
 					setConfirmOpen(false);
 					setPendingRemoveId(null);

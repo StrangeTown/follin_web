@@ -16,7 +16,8 @@ export default function CreateTodo() {
 		<div>
 			<button
 				onClick={() => setOpen(true)}
-				aria-label="Create todo"
+				aria-label="新建任务"
+				title="新建任务"
 				className="p-1 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
 			>
 				<CirclePlus className="w-4 h-4" />

@@ -17,10 +17,6 @@ export default function Todos() {
 		s.history.find((h) => h.date === todayKey)
 	);
 
-	if (todos.length === 0) {
-		return <div className="p-2 text-gray-600">No todos yet</div>;
-	}
-
 	return (
 		<div>
 			<div className="flex flex-wrap gap-2">
@@ -29,19 +25,25 @@ export default function Todos() {
 					<CreateTodo />
 				</div>
 
-				{displayTodos.map((todo) => {
-					const inToday = !!todayEntry && todayEntry.todoIds.includes(todo.id);
-					return (
-						<TodoItem
-							key={todo.id}
-							todo={todo}
-							inToday={inToday}
-							todayKey={todayKey}
-							addTodoToDate={addTodoToDate}
-							removeTodoFromDate={removeTodoFromDate}
-						/>
-					)
-				})}
+				{displayTodos.length === 0 ? (
+						<div className="inline-flex items-center rounded-sm px-3 py-1 text-sm text-gray-600 bg-white/80 min-w-20">
+							暂无任务
+						</div>
+				) : (
+					displayTodos.map((todo) => {
+						const inToday = !!todayEntry && todayEntry.todoIds.includes(todo.id);
+						return (
+							<TodoItem
+								key={todo.id}
+								todo={todo}
+								inToday={inToday}
+								todayKey={todayKey}
+								addTodoToDate={addTodoToDate}
+								removeTodoFromDate={removeTodoFromDate}
+							/>
+						)
+					})
+				)}
 			</div>
 		</div>
 	);

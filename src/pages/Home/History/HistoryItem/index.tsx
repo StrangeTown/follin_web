@@ -81,7 +81,7 @@ export default function HistoryItem({ date }: Props) {
 			key={key}
 			className={`text-xs px-2 py-1 rounded-sm ${
 				isToday ? "bg-blue-50" : "bg-gray-50"
-			} text-gray-800 ${isToday ? "w-96" : "w-60"} group`}
+			} text-gray-800 ${isToday ? "w-96" : "w-60"} group min-h-32`}
 		>
 			{/* Header */}
 			<div className="flex items-center justify-between">

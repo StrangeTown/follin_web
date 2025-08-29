@@ -22,44 +22,52 @@ export default function TodoOverlay({
 		<div className="absolute inset-0 flex items-center justify-center rounded-sm bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity">
 			<div className="flex items-center gap-2">
 				{inToday ? (
-					<CalendarMinus
-						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-						aria-label="remove from calendar"
-						onClick={(e) => {
-							e.stopPropagation();
-							if (typeof onCalendarMinusClick === "function")
-								onCalendarMinusClick(todo.id);
-						}}
-					/>
+					<span title="从今日移除">
+						<CalendarMinus
+							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+							aria-label="remove from calendar"
+							onClick={(e) => {
+								e.stopPropagation();
+								if (typeof onCalendarMinusClick === "function")
+									onCalendarMinusClick(todo.id);
+							}}
+						/>
+					</span>
 				) : (
-					<CalendarPlus
-						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-						aria-label="open calendar"
-						onClick={(e) => {
-							e.stopPropagation();
-							if (typeof onCalendarPlusClick === "function")
-								onCalendarPlusClick(todo.id);
-						}}
-					/>
+					<span title="加入今日">
+						<CalendarPlus
+							className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+							aria-label="open calendar"
+							onClick={(e) => {
+								e.stopPropagation();
+								if (typeof onCalendarPlusClick === "function")
+									onCalendarPlusClick(todo.id);
+							}}
+						/>
+					</span>
 				)}
 
-				<Trash2
-					className="w-4 h-4 cursor-pointer text-gray-600 hover:text-red-600"
-					aria-label="remove todo"
-					onClick={(e) => {
-						e.stopPropagation();
-						if (typeof onTrashClick === "function") onTrashClick(todo.id);
-					}}
-				/>
+				<span title="删除任务">
+					<Trash2
+						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-red-600"
+						aria-label="remove todo"
+						onClick={(e) => {
+							e.stopPropagation();
+							if (typeof onTrashClick === "function") onTrashClick(todo.id);
+						}}
+					/>
+				</span>
 
-				<Info
-					className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
-					aria-label="todo info"
-					onClick={(e) => {
-						e.stopPropagation();
-						if (typeof onInfoClick === "function") onInfoClick(todo.id);
-					}}
-				/>
+				<span title="查看详情">
+					<Info
+						className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600"
+						aria-label="todo info"
+						onClick={(e) => {
+							e.stopPropagation();
+							if (typeof onInfoClick === "function") onInfoClick(todo.id);
+						}}
+					/>
+				</span>
 			</div>
 		</div>
 	);
