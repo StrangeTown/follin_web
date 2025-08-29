@@ -154,7 +154,6 @@ export default function HistoryItem({ date }: Props) {
 				open={showFocusModal}
 				onClose={() => setShowFocusModal(false)}
 				todos={incompleteTodos}
-				title={`${localizedHistoryLabel(date)} - 专注模式`}
 			/>
 		</div>
 	);
