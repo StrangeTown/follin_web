@@ -1,4 +1,4 @@
-import { X, ChevronUp, ChevronDown } from "lucide-react";
+import { X, ChevronUp, ChevronDown, Check } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Todo } from "../types/todo";
 
@@ -129,8 +129,7 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
         <div className="flex-1 overflow-y-auto p-6">
           {todos.length === 0 ? (
             <div className="text-center text-gray-500 mt-12">
-              <p className="text-lg">No todos to review</p>
-              <p className="text-sm mt-2">Add some todos to see them here</p>
+              <p className="text-sm mt-2">还没有已完成的任务</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -149,27 +148,9 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3 flex-1">
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          todo.completed
-                            ? "bg-green-500 border-green-500"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {todo.completed && (
-                          <svg
-                            className="w-3 h-3 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
+                      {todo.completed && (
+                        <Check className="w-4 h-4 text-green-500" />
+                      )}
                       <div className="flex-1">
                         <p
                           className={`text-sm ${
@@ -217,8 +198,6 @@ export default function ReviewModal({ open, onClose, todos, title = "Review Todo
         <div className="border-t border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              <div>Total: {todos.length} todos</div>
-              <div>Completed: {todos.filter(t => t.completed).length} / {todos.length}</div>
             </div>
             
             {todos.length > 0 && (

@@ -128,7 +128,7 @@ export default function HistoryItem({ date }: Props) {
 				open={showReviewModal}
 				onClose={() => setShowReviewModal(false)}
 				todos={completedTodos}
-				title={`${localizedHistoryLabel(date)} - 已完成任务`}
+				title={`${localizedHistoryLabel(date)} - 今日复盘`}
 			/>
 		</div>
 	);
