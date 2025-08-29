@@ -27,7 +27,7 @@ function App() {
   }, [checkHistoryTodos])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/follin_web">
       <div>
         <Routes>
           <Route path="/" element={<Home />} />
